@@ -11,7 +11,7 @@
         <router-link to="/register/phoneRegister" class="order-item" tag="span">/注册</router-link>
       </div> -->
       <ul class="user-info">
-        <li class="user-name">调用登陆者姓名</li>
+        <li class="user-name"> {{ username }} </li>
         <!-- <li class="node-info">
           <span class="sharing-node" @click="toShow">分享节点</span>
           <span class="business-node">商家节点</span>
@@ -206,6 +206,8 @@ export default {
   name: "mine",
   setup() {
     const is_login = ref(localStorage.getItem("isLogin") === 'true');
+    const username = ref(localStorage.getItem("username"));
+    const password = ref(localStorage.getItem("password"));
     const show = ref(false);
     const columns = ref(1);
     const { ctx } = getCurrentInstance();
@@ -224,9 +226,11 @@ export default {
 
     watchEffect(() => {
       is_login.value = localStorage.getItem("isLogin") === 'true';
+      username.value = localStorage.getItem("username");
+      password.value = localStorage.getItem("password");
     });
 
-    return { show, columns, toShow, handleClose, is_login };
+    return { show, columns, toShow, handleClose, is_login, username, password };
   }
 };
 </script>
