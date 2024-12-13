@@ -1,31 +1,35 @@
 <template>
-  <div class="mine-layout">
+  <div class="login-regist" v-show="!is_login">
+      <router-link to="/mylogin" class="order-item" tag="span">登录</router-link>
+      <router-link to="/register/myRegister" class="order-item" tag="span">/注册</router-link>
+  </div>
+  <div class="mine-layout" v-show="is_login">
     <section class="mine-header">
-      <img src="../../assets/image/product/store-new.png" class="header-img" />
+      <img src="../../assets/image/product/store-headerM.png" class="header-img" />
       <!-- <div class="login-regist">
         <router-link to="/login" class="order-item" tag="span">登录</router-link>
         <router-link to="/register/phoneRegister" class="order-item" tag="span">/注册</router-link>
       </div> -->
       <ul class="user-info">
-        <li class="user-name">钻石王老五</li>
-        <li class="node-info">
+        <li class="user-name">调用登陆者姓名</li>
+        <!-- <li class="node-info">
           <span class="sharing-node" @click="toShow">分享节点</span>
           <span class="business-node">商家节点</span>
-        </li>
+        </li> -->
       </ul>
     </section>
     <section class="my-info">
       <ul class="info-list">
         <li class="info-item">
-          <b>09</b>
+          <b>15</b>
           <span>商品关注</span>
         </li>
         <li class="info-item">
-          <b>09</b>
+          <b>05</b>
           <span>店铺关注</span>
         </li>
         <li class="info-item">
-          <b>09</b>
+          <b>56</b>
           <span>我的足迹</span>
         </li>
       </ul>
@@ -196,10 +200,12 @@
 </template>
 
 <script>
-import { ref, onMounted, getCurrentInstance } from "vue";
+import { ref, onMounted, getCurrentInstance, watchEffect } from "vue";
+
 export default {
   name: "mine",
   setup() {
+    const is_login = ref(localStorage.getItem("isLogin") === 'true');
     const show = ref(false);
     const columns = ref(1);
     const { ctx } = getCurrentInstance();
@@ -216,12 +222,26 @@ export default {
       ctx.$eventBus.$emit("changeTag", 3);
     });
 
-    return { show, columns, toShow, handleClose };
+    watchEffect(() => {
+      is_login.value = localStorage.getItem("isLogin") === 'true';
+    });
+
+    return { show, columns, toShow, handleClose, is_login };
   }
 };
 </script>
 
 <style scoped lang="scss">
+.login-regist {
+    display: flex;
+    justify-content: center;
+    margin-top: 300px;
+    .order-item {
+        font-size: 16px;
+        color: #333;
+        margin: 0 10px;
+    }   
+}
 .mine-layout {
   padding: 30px 16px;
   min-height: 812px;
