@@ -30,21 +30,23 @@
         </router-link>
       </ul>
     </section>
-    <van-button plain size="large" type="danger">退出登录</van-button>
+    <van-button plain size="large" type="danger" @click="handleLogout">退出登录</van-button>
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
-export default {
-  name: "Setting",
-  setup() {
-    const checked = ref(false);
-    return {
-      checked
-    };
-  }
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const checked = ref(false);
+const handleLogout = () => {
+  localStorage.setItem("isLogin", false);
+  console.log("退出登录");
+  console.log(localStorage.getItem("isLogin"));
+  router.push("/mine");
 };
+
 </script>
 
 <style scoped lang="scss">

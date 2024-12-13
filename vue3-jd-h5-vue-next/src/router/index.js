@@ -15,7 +15,7 @@ const indexRouter = {
   redirect: '/index',
   children: []
 }
-
+ 
 const routes = [
   indexRouter,
   {

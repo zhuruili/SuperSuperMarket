@@ -38,5 +38,5 @@ export default [{
       index: 1
     },
     component: () => import('@/views/mine/index.vue')
-  },
+  }
 ]

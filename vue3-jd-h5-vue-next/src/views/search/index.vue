@@ -98,7 +98,7 @@ export default {
       this.selectTag(keyword);
     },
     selectTag(keyword) {
-      //   this.$router.push("/product-list?keyword=" + keyword + "&categoryId=0");
+      // this.$router.push("/product-list?keyword=" + keyword + "&categoryId=0");
       this.$store.commit("search/addHistory", keyword);
       this.$store.commit("search/setHistory", dedupe(this.searchHistory));
     },
