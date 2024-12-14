@@ -1,6 +1,6 @@
 # SuperSupermarket
 
-![frontend](https://img.shields.io/badge/frontend-Vue-green)
+![frontend](https://img.shields.io/badge/frontend-Vue3-green)
 ![backend](https://img.shields.io/badge/backend-Python-blue)
 ![license](https://img.shields.io/badge/License-MIT-red)
 ![database](https://img.shields.io/badge/Database-MySQL-gray)
@@ -20,15 +20,23 @@ A simple shopping web application
 
 项目初期的准备与分工。
 
-1. 爬取的具体数据项汇总/得分点对应（√）
-2. 数据库设计（L+W+C）
-3. 图形绘制（Z）
-4. 数据爬取[.backends/crawler]并写入数据库（L）
-5. 前端设计与实现（W+C）
+- [X] 数据项汇总与得分点对应
+- [X] 数据库设计与类图绘制
+- [ ] 数据爬取(ing)
+- [ ] 建立数据库(ing)
+- [X] 前端设计
 
 ### Phase-2
 
 前后端的结合与细节功能实现。
+
+## 数据库设计
+
+根据购物应用的功能设计数据库的类图如下：
+
+<p align="center">
+  <img src="Database/design/dataTable.png" alt="dataTable">
+</p>
 
 ## 数据爬取
 
@@ -36,10 +44,10 @@ A simple shopping web application
 
 1. id--商品ID，根据商品条目数累加
 2. title--商品名/显示标题
-3. piclink--图片URL
+3. pic_url--图片URL
 4. price--售价
-5. sold--购买人数
-6. shopname--店铺名
+5. sale--销售量
+6. shop_name--店铺名
 7. storage--库存
-8. category--类别
-9. pluslink--详情链接
+8. kind--类别
+9. url--详情链接
