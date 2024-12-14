@@ -35,19 +35,19 @@ linkDict = {
 
 # 参数设置
 port = 9222 # Chrome remote port
-SearchItem = "电脑"  # 搜索内容
-ItemKind = 1 # 商品种类
+SearchItem = "女装"  # 搜索内容
+ItemKind = 3 # 商品种类
 listener = 'h5/mtop.relationrecommend.wirelessrecommend.recommend/2.0'  # 监听器
 itemLink = linkDict[SearchItem]  # 商品链接
 nextPageBtn = 'css:button.next-btn.next-medium.next-btn-normal.next-pagination-item.next-next'
-itemNum = 0 # 商品累计数量,充当第一列id
+itemNum = 3318 # 商品累计数量,充当第一列id
 json_data = {}  # 存放数据
 SaveOrNot = True  # 是否保存数据,如果不保存就填False
 SAVEPATH = "backends\\dataset"  # 数据保存路径
 FilePath = SAVEPATH + "\\" + 'itemsInfo' + ".csv"  
 r = Recorder(FilePath)
 data_list = []  # 存放待保存数据
-Pages = 50  # 爬取页数
+Pages = 35  # 爬取页数
 
 # 功能函数
 def random_sleep():
@@ -107,6 +107,7 @@ if __name__ == "__main__":
     
     for p in range(Pages):
         cp.scroll.to_bottom()  # 滚动到底部
+        time.sleep(1)
         if p == 0:
             resp = cp.listen.wait()  # 等待监听响应
             cp.ele(locator=nextPageBtn, timeout=5).click() # page+=1
