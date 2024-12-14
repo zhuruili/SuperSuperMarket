@@ -2,15 +2,16 @@
 淘宝商品信息爬取，以csv暂存，数据后续将存入数据库
 商品预计条目数：1w+
 商品类别数：8
-类别条目：
-    1. 电脑
-    2. 手机
-    3. 女装
-    4. 食品
-    5. 家居
-    6. 美妆
-    7. 娱乐
-    8. 图书
+Chrome remote port：9222
+类别条目及链接：
+    1. [电脑](https://s.taobao.com/search?page=1&q=%E7%94%B5%E8%84%91&tab=all)
+    2. [手机](https://s.taobao.com/search?page=1&q=%E6%89%8B%E6%9C%BA&tab=all)
+    3. [女装](https://s.taobao.com/search?page=1&q=%E5%A5%B3%E8%A3%85&tab=all)
+    4. [食品](https://s.taobao.com/search?page=1&q=%E9%A3%9F%E5%93%81&tab=all)
+    5. [宠物](https://s.taobao.com/search?page=1&q=%E5%AE%A0%E7%89%A9&tab=all)
+    6. [美妆](https://s.taobao.com/search?page=1&q=%E7%BE%8E%E5%A6%86&tab=all)
+    7. [鲜花](https://s.taobao.com/search?page=1&q=%E9%B2%9C%E8%8A%B1&tab=all)
+    8. [图书](https://s.taobao.com/search?page=1&q=%E5%9B%BE%E4%B9%A6&tab=all)
 """
 
 from DrissionPage import ChromiumPage
@@ -20,54 +21,44 @@ import re
 import json
 from DataRecorder import Recorder
 
+# 链接容器
+linkDict = {
+    '电脑':'https://s.taobao.com/search?page=1&q=%E7%94%B5%E8%84%91&tab=all',
+    '手机':'https://s.taobao.com/search?page=1&q=%E6%89%8B%E6%9C%BA&tab=all',
+    '女装':'https://s.taobao.com/search?page=1&q=%E5%A5%B3%E8%A3%85&tab=all',
+    '食品':'https://s.taobao.com/search?page=1&q=%E9%A3%9F%E5%93%81&tab=all',
+    '宠物':'https://s.taobao.com/search?page=1&q=%E5%AE%A0%E7%89%A9&tab=all',
+    '美妆':'https://s.taobao.com/search?page=1&q=%E7%BE%8E%E5%A6%86&tab=all',
+    '鲜花':'https://s.taobao.com/search?page=1&q=%E9%B2%9C%E8%8A%B1&tab=all',
+    '图书':'https://s.taobao.com/search?page=1&q=%E5%9B%BE%E4%B9%A6&tab=all'
+}
+
 # 参数设置
-USERNAME = "your username"  
-PASSWORD = "your pwd"
-SearchItem = input("请输入您想要的商品名称：")  # 搜索的商品名称
+port = 9222 # Chrome remote port
+SearchItem = "电脑"  # 搜索内容
+listener = 'h5/mtop.relationrecommend.wirelessrecommend.recommend/2.0'  # 监听器
+itemLink = linkDict[SearchItem]  # 商品链接
+nextPageBtn = 'css:button.next-btn.next-medium.next-btn-normal.next-pagination-item.next-next'
 json_data = {}  # 存放数据
-SaveOrNot = True  # 是否保存数据,如果不保存就填False
-SAVEPATH = "Spi_DataSave"  # 数据保存路径
+SaveOrNot = False  # 是否保存数据,如果不保存就填False
+SAVEPATH = "backends\dataset"  # 数据保存路径
 data_list = []  # 存放待保存数据
-Pages = 5  # 爬取页数
+Pages = 10  # 爬取页数
 
 # 功能函数
 def random_sleep():
     """小睡一下"""
     time.sleep(random.randint(1, 3))  # 随机等待
 
-def login():
-    """登录"""
-    cp.ele('css:# fm-login-id').clear()  # 清空用户名输入框
-    random_sleep()
-    cp.ele('css:# fm-login-id').input(USERNAME)  # 输入用户名
-    cp.ele('css:# fm-login-password').input(PASSWORD)  # 输入密码
-    random_sleep()
-    try:
-        cp.ele('css:.fm-button.fm-submit.password-login.ariatheme',timeout=1).click()  # 点击登录按钮
-    except:
-        cp.ele('css:.fm-button.fm-submit.password-login').click()
-    random_sleep()
-
-def Search(item):
-    """搜索"""
-    random_sleep()
-    cp.ele('# q').input(SearchItem)  # 输入搜索内容
-    random_sleep()
-    cp.ele('css:.btn-search.tb-bg').click()  # 点击搜索按钮
-    random_sleep()
-
 def get_data(resp):
     """提取数据,返回json数据"""
     try:
-        resp_re = re.findall(pattern=' mtopjsonp[a-z]+\d+\((.*)\)',string=resp)[0]  # 使用正则提取json数据
-        # print(resp_re)
+        resp_re = re.findall(pattern=' mtopjsonp\d+\((.*)\)',string=resp)[0]  # 使用正则提取json数据
+        # print(resp_re) 
     except:
-        print("正则第一次匹配失败，尝试第二次匹配......")
-        try:
-            resp_re = re.findall(pattern=' mtopjsonp\d+\((.*)\)',string=resp)[0]  # 使用正则提取json数据
-            # print(resp_re) 
-        except:
-            print("正则第二次匹配失败，网站或已更新，请手动调整正则表达式")
+        print("正则匹配失败，网站或已更新，请手动调整正则表达式")
+        resp_re = resp
+    
 
     json_data = json.loads(resp_re)  # 转换json数据
     return json_data
@@ -99,18 +90,18 @@ def save_data(data_list,page):
         print("数据未保存")
 
 if __name__ == "__main__":
-    cp = ChromiumPage()  # 打开浏览器
+    cp = ChromiumPage(addr_or_opts=port)  # 接管浏览器
 
-    cp.get('https://www.taobao.com/')  # 打开淘宝首页
+    cp.listen.start(listener)  # 启动监听
 
-    cp.listen.start('h5/mtop.relationrecommend.wirelessrecommend.recommend/2.0')  # 启动监听
-    Search(SearchItem)  # 搜索商品
+    cp.get(itemLink)
     
-    try:
-        login()  # 这里我发现一个很神奇的事情是即使我之前登陆过了但有时运行这个代码淘宝还是会让我重新登陆，或许是反爬机制？
-    except:
-        print("账户已登陆，无需重复登陆")
     for p in range(Pages):
+        if p == 0:
+            resp = cp.listen.wait()  # 等待监听响应
+            cp.ele(locator=nextPageBtn, timeout=1).click() # page+=1
+            print("------**第一页数据跳过**------")
+            continue # skip first page
         print(f"------**正在爬取第{p+1}页数据**------")
         resp = cp.listen.wait()  # 等待监听响应
         # print(resp._raw_body)  # 输出响应，观察结构方便后续数据提取
@@ -119,9 +110,10 @@ if __name__ == "__main__":
         # print(json_data)
         get_items(json_data)  # 解析数据
 
-        save_data(data_list,p)  # 保存数据
+        # save_data(data_list,p)  # 保存数据
         random_sleep()
-        cp.ele('css:.next-icon.next-icon-arrow-right.next-xs.next-btn-icon.next-icon-last.next-pagination-icon-next',timeout=1).click()  # 点击下一页
+        cp.ele(locator=nextPageBtn, timeout=1).click()
+        
         print(f"------**第{p+1}页数据爬取完毕**------")
 
     print("------**Spider Done**------")
