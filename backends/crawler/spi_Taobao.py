@@ -36,19 +36,23 @@ linkDict = {
 # 参数设置
 port = 9222 # Chrome remote port
 SearchItem = "电脑"  # 搜索内容
+ItemKind = 1 # 商品种类
 listener = 'h5/mtop.relationrecommend.wirelessrecommend.recommend/2.0'  # 监听器
 itemLink = linkDict[SearchItem]  # 商品链接
 nextPageBtn = 'css:button.next-btn.next-medium.next-btn-normal.next-pagination-item.next-next'
+itemNum = 0 # 商品累计数量,充当第一列id
 json_data = {}  # 存放数据
-SaveOrNot = False  # 是否保存数据,如果不保存就填False
-SAVEPATH = "backends\dataset"  # 数据保存路径
+SaveOrNot = True  # 是否保存数据,如果不保存就填False
+SAVEPATH = "backends\\dataset"  # 数据保存路径
+FilePath = SAVEPATH + "\\" + 'itemsInfo' + ".csv"  
+r = Recorder(FilePath)
 data_list = []  # 存放待保存数据
-Pages = 10  # 爬取页数
+Pages = 50  # 爬取页数
 
 # 功能函数
 def random_sleep():
     """小睡一下"""
-    time.sleep(random.randint(1, 3))  # 随机等待
+    time.sleep(random.randint(3, 5))  # 随机等待
 
 def get_data(resp):
     """提取数据,返回json数据"""
@@ -68,21 +72,26 @@ def get_items(json_data):
     data_list.clear()  # 清空数据,防止重复
     itemArr = json_data['data']['itemsArray']
     for item in itemArr:
-        title = item['title']
-        price = item['price']
-        nick = item['nick']
-        sale = item['realSales']
-        # 还可以增加更多数据，这里我懒得写了
-        print(f'商品名称：{title}，价格：{price}，店铺：{nick},销量：{sale}')
-        data_list.append([title,price,nick,sale])
+        global itemNum
+        itemNum += 1 # id
+        title = item['title'] # titile
+        pic_path = item['pic_path'] # pic_path
+        price = item['price'] # price
+        sale = item['realSales'] # realSales
+        nick = item['nick'] # nick(shopname)
+        # missing shopID
+        storage = int(random.gauss(1500, 500))
+        storage = max(100, min(storage, 3000)) # storage
+        global ItemKind # ItemKind
+        auctionURL = item['auctionURL'] # auctionURL
+        data_list.append([itemNum, title, pic_path, price, sale, nick, storage, ItemKind, auctionURL])
 
 def save_data(data_list,page):
     """保存数据"""
     if SaveOrNot:
-        FilePath = SAVEPATH + "\\" + SearchItem + ".xlsx"  
-        r = Recorder(FilePath)
-        if page == 0:
-            r.add_data(['商品名称','价格','店铺','销量'])
+        # if page == 0:
+        #     r.add_data(['商品名称','价格','店铺','销量'])
+        # 为了配合数据库，这里不再添加表头
         r.add_data(data_list)
         r.record()
         print("数据已保存")
@@ -97,9 +106,10 @@ if __name__ == "__main__":
     cp.get(itemLink)
     
     for p in range(Pages):
+        cp.scroll.to_bottom()  # 滚动到底部
         if p == 0:
             resp = cp.listen.wait()  # 等待监听响应
-            cp.ele(locator=nextPageBtn, timeout=1).click() # page+=1
+            cp.ele(locator=nextPageBtn, timeout=5).click() # page+=1
             print("------**第一页数据跳过**------")
             continue # skip first page
         print(f"------**正在爬取第{p+1}页数据**------")
@@ -110,10 +120,11 @@ if __name__ == "__main__":
         # print(json_data)
         get_items(json_data)  # 解析数据
 
-        # save_data(data_list,p)  # 保存数据
+        save_data(data_list,p)  # 保存数据
         random_sleep()
-        cp.ele(locator=nextPageBtn, timeout=1).click()
+        cp.ele(locator=nextPageBtn, timeout=5).click()
         
         print(f"------**第{p+1}页数据爬取完毕**------")
 
     print("------**Spider Done**------")
+    print(f"共爬取{Pages}页数据，{itemNum}条数据")

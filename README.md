@@ -1,8 +1,9 @@
 # SuperSupermarket
 
-![language](https://img.shields.io/badge/Language-Python-blue)
+![frontend](https://img.shields.io/badge/frontend-Vue-green)
+![backend](https://img.shields.io/badge/backend-Python-blue)
 ![license](https://img.shields.io/badge/License-MIT-red)
-![database](https://img.shields.io/badge/Database-MySQL-green)
+![database](https://img.shields.io/badge/Database-MySQL-gray)
 ![crawler](https://img.shields.io/badge/crawler-DrissionPage-brown)
 
 一款简易的购物Web应用
@@ -39,7 +40,6 @@ A simple shopping web application
 4. price--售价
 5. sold--购买人数
 6. shopname--店铺名
-7. shopid--店铺id
-8. storage--库存
-9. category--类别
-10. pluslink--详情链接
+7. storage--库存
+8. category--类别
+9. pluslink--详情链接
