@@ -105,3 +105,53 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+
+-- view
+-- 为 kind = 1 创建视图
+CREATE VIEW item_kind1 AS
+SELECT *
+FROM supersupermarket.item
+WHERE kind = 1;
+
+-- 为 kind = 2 创建视图
+CREATE VIEW item_kind2 AS
+SELECT *
+FROM supersupermarket.item
+WHERE kind = 2;
+
+-- 为 kind = 3 创建视图
+CREATE VIEW item_kind3 AS
+SELECT *
+FROM supersupermarket.item
+WHERE kind = 3;
+
+-- 为 kind = 4 创建视图
+CREATE VIEW item_kind4 AS
+SELECT *
+FROM supersupermarket.item
+WHERE kind = 4;
+
+-- 为 kind = 5 创建视图
+CREATE VIEW item_kind5 AS
+SELECT *
+FROM supersupermarket.item
+WHERE kind = 5;
+
+-- 为 kind = 6 创建视图
+CREATE VIEW item_kind6 AS
+SELECT *
+FROM supersupermarket.item
+WHERE kind = 6;
+
+-- 为 kind = 7 创建视图
+CREATE VIEW item_kind7 AS
+SELECT *
+FROM supersupermarket.item
+WHERE kind = 7;
+
+-- 为 kind = 8 创建视图
+CREATE VIEW item_kind8 AS
+SELECT *
+FROM supersupermarket.item
+WHERE kind = 8;
