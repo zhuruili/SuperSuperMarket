@@ -91,7 +91,7 @@ def create_table():
     # 创建用户表
     cursor.execute('''
         create table IF NOT EXISTS users(
-            user_ID int primary key,			/*用户ID*/
+            user_ID int AUTO_INCREMENT primary key,			/*用户ID*/
             userName varchar(500) not null,		/*用户名*/
             passwords varchar(12) not null,		/*密码*/
             state int		/*用户状态*/
@@ -101,7 +101,7 @@ def create_table():
     # 创建订单表
     cursor.execute('''
         create table IF NOT EXISTS orders(
-            order_ID int primary key,	/*订单ID*/
+            order_ID int AUTO_INCREMENT primary key,	/*订单ID*/
             user_ID int,		        /*用户ID*/
             item_ID int,		        /*商品ID*/
             state int,			        /*订单状态*/
@@ -115,7 +115,7 @@ def create_table():
     # 创建券表
     cursor.execute('''
         create table IF NOT EXISTS ticket(
-            ticket_ID int primary key,	/*优惠券ID*/
+            ticket_ID int AUTO_INCREMENT primary key,	/*优惠券ID*/
             kind int,					/*商品种类*/
             store int,					/*库存数量*/
             info varchar(200),			/*描述信息*/
@@ -128,7 +128,7 @@ def create_table():
     # 创建用户券表
     cursor.execute('''
         create table IF NOT EXISTS userTicket(
-            userTicket_ID int primary key,		/*用户券ID*/
+            userTicket_ID int AUTO_INCREMENT primary key,		/*用户券ID*/
             user_ID int,			            /*用户ID*/
             ticket_ID int,			            /*优惠券ID*/
             foreign key (user_ID) references users(user_ID),
@@ -139,7 +139,7 @@ def create_table():
     # 创建购物车表
     cursor.execute('''
         create table IF NOT EXISTS cart(
-            cartID int primary key,		/*购物车ID*/
+            cartID int AUTO_INCREMENT primary key,		/*购物车ID*/
             user_ID int,		        /*用户ID*/
             item_ID int,		        /*商品ID*/
             count int,			        /*要购买商品数量*/
@@ -151,7 +151,7 @@ def create_table():
     # 创建店铺表
     cursor.execute('''
         create table IF NOT EXISTS merchandise(
-            merchandiseID int primary key,		/*店铺商品ID*/
+            merchandiseID int AUTO_INCREMENT primary key,		/*店铺商品ID*/
             user_ID int,		                /*用户ID*/
             item_ID int,		                /*商品ID*/
             foreign key (user_ID) references users(user_ID),
@@ -166,5 +166,5 @@ def create_table():
 
 if __name__ == "__main__":
     # create_database()
-    # create_table()
-    insert_product()
+    create_table()
+    # insert_product()

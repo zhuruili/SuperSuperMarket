@@ -40,6 +40,28 @@ def search():
     result = cursor.fetchall()
     return jsonify({'data': result})
 
+@app.route('/register', methods=['POST'])
+def register():
+    conn = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password = '123456',
+        database='super_supermarket'
+    )
+    data = request.get_json()
+    print(data)
+    username = data.get('username')
+    password = data.get('password')
+    print('username' + username)
+    print('password' + password)
+    
+    cursor = conn.cursor()
+    cursor.execute('insert into users(userName, passwords, state) values(%s, %s, %s)', [username, password, 0])
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({'data': '注册成功'})
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5678)
     print('服务器关闭')
