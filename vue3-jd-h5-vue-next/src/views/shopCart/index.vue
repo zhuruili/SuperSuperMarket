@@ -36,7 +36,7 @@
               <li class="check-item">
                 <van-checkbox :key="index" checked-color="#91C95B" :name="item"></van-checkbox>
               </li>
-              <img src="../../assets/image/shopCart/购物车-1.png" />
+              <!-- <img src="../../assets/image/shopCart/购物车-1.png" />
               <li class="order-detail">
                 <ul>
                   <li class="info-one">
@@ -50,11 +50,11 @@
                   <span>￥200</span>
                   <van-stepper v-model="stepperValue" />
                 </div>
-              </li>
+              </li> -->
             </div>
             <div class="order-total">
               <label>合计：</label>
-              <span>123000</span>
+              <span>{{  }}</span>
             </div>
           </ul>
         </van-checkbox-group>
@@ -123,149 +123,93 @@
   </div>
 </template>
 
-<script>
-import { onMounted, ref, getCurrentInstance } from "vue";
+<script setup>
+import { ref, onMounted, getCurrentInstance } from "vue";
 import { useRouter } from 'vue-router';
-export default {
-  name: "shopCart",
-  setup() {
-    const { ctx } = getCurrentInstance();
-    const $router = useRouter();
 
-    const clearCart = ref(false);
-    const columns = ref(1);
-    const cartMode = ref(true);
-    const show = ref(false);
-    const checked = ref(false);
-    const stepperValue = ref("");
+const { ctx } = getCurrentInstance();
+const $router = useRouter();
 
-    const close = () => {
-      show.value = false;
-    };
+const clearCart = ref(false);
+const columns = ref(1);
+const cartMode = ref(true);
+const show = ref(false);
+const checked = ref(false);
+const stepperValue = ref("");
 
-    const confirmFn = () => {
-      show.value = false;
-      ctx.$toast.loading({
-        mask: true,
-        duration: 1000, // 持续展示 toast
-        forbidClick: true, // 禁用背景点击
-        loadingType: "spinner",
-        message: "支付中..."
-      });
-
-      setTimeout(() => {
-        $router.push("/order/transactionDetails");
-      }, 1300);
-    };
-
-    const submitDelete = async () => {
-      await ctx.$dialog.confirm({
-        message: "确认删除这些商品？",
-        confirmButtonColor: "#D8182D",
-        cancelButtonColor: "#D8182D"
-      });
-      clearCart.value = true;
-    };
-
-    const submitSettlement = () => {
-      show.value = true;
-    };
-
-    const setCartMode = () => {
-      cartMode.value = !cartMode.value;
-    };
-
-    onMounted(() => {
-      ctx.$eventBus.$emit("changeTag", 2);
-    });
-
-    return {
-      clearCart,
-      columns,
-      cartMode, // 购物车的模式，true 是显示出编辑按钮 false 是显示完成按钮,默认是false;
-      defaultData: [
-        {
-          text: "Top-Pay",
-          value: "Top-Pay"
-        }
-      ],
-      pickData: {
-        data1: [
-          {
-            text: "Top-Pay",
-            value: "Top-Pay"
-          },
-          {
-            text: "支付宝",
-            value: "支付宝"
-          },
-          {
-            text: "微信",
-            value: "微信"
-          },
-          {
-            text: "银行卡",
-            value: "银行卡"
-          }
-        ]
-      },
-      show,
-      list: ["a"],
-      lists: [
-        {
-          imgSrc: require("../../assets/image/shopCart/购物车-2.png"),
-          info: "型号;规格;颜色;",
-          price: "￥200",
-          total: "123000",
-          desc: "三彩预售新款短裙淑女裙淑女裙淑女裙淑女"
-        },
-        {
-          imgSrc: require("../../assets/image/shopCart/购物车-3.png"),
-          info: "型号;规格;颜色;",
-          price: "￥200",
-          total: "123000",
-          desc: "三彩预售新款短裙淑女裙淑女裙淑女裙淑女"
-        },
-        {
-          imgSrc: require("../../assets/image/shopCart/购物车-4.png"),
-          info: "型号;规格;颜色;",
-          price: "￥200",
-          total: "123000",
-          desc: "三彩预售新款短裙淑女裙淑女裙淑女裙淑女"
-        },
-        {
-          imgSrc: require("../../assets/image/shopCart/购物车-5.png"),
-          info: "型号;规格;颜色;",
-          price: "￥200",
-          total: "123000",
-          desc: "三彩预售新款短裙淑女裙淑女裙淑女裙淑女"
-        },
-        {
-          imgSrc: require("../../assets/image/shopCart/购物车-6.png"),
-          info: "型号;规格;颜色;",
-          price: "￥200",
-          total: "123000",
-          desc: "三彩预售新款短裙淑女裙淑女裙淑女裙淑女"
-        },
-        {
-          imgSrc: require("../../assets/image/shopCart/购物车-7.png"),
-          info: "型号;规格;颜色;",
-          price: "￥200",
-          total: "123000",
-          desc: "三彩预售新款短裙淑女裙淑女裙淑女裙淑女"
-        }
-      ],
-      checked,
-      stepperValue,
-      result: ["a", "b"],
-      close,
-      confirmFn,
-      submitSettlement,
-      submitDelete,
-      setCartMode
-    };
-  }
+const close = () => {
+  show.value = false;
 };
+
+const confirmFn = () => {
+  show.value = false;
+  ctx.$toast.loading({
+    mask: true,
+    duration: 1000, // 持续展示 toast
+    forbidClick: true, // 禁用背景点击
+    loadingType: "spinner",
+    message: "支付中..."
+  });
+
+  setTimeout(() => {
+    $router.push("/order/transactionDetails");
+  }, 1300);
+};
+
+const submitDelete = async () => {
+  await ctx.$dialog.confirm({
+    message: "确认删除这些商品？",
+    confirmButtonColor: "#D8182D",
+    cancelButtonColor: "#D8182D"
+  });
+  clearCart.value = true;
+};
+
+const submitSettlement = () => {
+  show.value = true;
+};
+
+const setCartMode = () => {
+  cartMode.value = !cartMode.value;
+};
+
+onMounted(() => {
+  ctx.$eventBus.$emit("changeTag", 2);
+});
+
+const defaultData = [
+  {
+    text: "Top-Pay",
+    value: "Top-Pay"
+  }
+];
+
+const pickData = {
+  data1: [
+    {
+      text: "Top-Pay",
+      value: "Top-Pay"
+    },
+    {
+      text: "支付宝",
+      value: "支付宝"
+    },
+    {
+      text: "微信",
+      value: "微信"
+    },
+    {
+      text: "银行卡",
+      value: "银行卡"
+    }
+  ]
+};
+
+const list = ["a"];
+
+const lists = ref([])
+
+const result = ["a", "b"];
 </script>
 
 <style scoped lang="scss">
