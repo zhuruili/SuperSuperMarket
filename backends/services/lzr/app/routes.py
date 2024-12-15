@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from backends.services.lzr.app import app, get_db
 import random
 
@@ -19,8 +19,10 @@ def home():
 
     return jsonify(selected_items)
 
-@app.route('/category/<category>', methods=['POST'])
-def category(category):
+@app.route('/category', methods=['POST'])
+def category():
+    data = request.get_json()
+    category = data['category']
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
