@@ -54,11 +54,82 @@
   </div>
 </template>
 
+<!-- <script setup>
+import { ref, onMounted } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import popup from "../../components/popup/index";
+import { getStore, dedupe, ModalHelper } from "../../utils/util";
+
+const searchText = ref('');
+const hotData = ref([]);
+const popupTitle = ref('');
+const popupShow = ref(false);
+
+const store = useStore();
+const router = useRouter();
+
+const searchHistory = ref([]);
+
+onMounted(() => {
+  let history = getStore("searchHistory");
+  if (!history) {
+    history = [];
+  }
+  store.commit("search/setHistory", history);
+  searchHistory.value = store.state.search.searchHistory;
+  getSelectTags();
+});
+
+const getSelectTags = () => {
+  fetch("http://test.happymmall.com/search/hot")
+    .then(res => res.json())
+    .then(data => {
+      hotData.value = data.data;
+    });
+};
+
+const getSearch = () => {
+  let keyword = searchText.value.trim();
+  if (!keyword) {
+    alert("请输入搜索内容");
+    return;
+  }
+  selectTag(keyword);
+};
+
+const selectTag = (keyword) => {
+  store.commit("search/addHistory", keyword);
+  store.commit("search/setHistory", dedupe(searchHistory.value));
+};
+
+const deleteHistory = () => {
+  popupTitle.value = "确定删除搜索历史吗？";
+  popupShow.value = true;
+};
+
+const confirmPopup = () => {
+  store.commit("search/setHistory", []);
+  cancelPopup();
+};
+
+const cancelPopup = () => {
+  ModalHelper.beforeClose();
+  popupShow.value = false;
+};
+
+const goBack = () => {
+  router.go(-1);
+};
+</script> -->
+
 <script>
 import popup from "../../components/popup/index";
 // import {hotData} from "../../service/getData";
 import { getStore, dedupe, ModalHelper } from "../../utils/util";
 import { mapState, mapMutations } from "vuex";
+import { axios } from 'axios';
+
 export default {
   data() {
     return {

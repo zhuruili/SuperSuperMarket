@@ -2,6 +2,7 @@
   <div class="login-regist" v-show="!is_login">
       <router-link to="/mylogin" class="order-item" tag="span">登录</router-link>
       <router-link to="/register/myRegister" class="order-item" tag="span">/注册</router-link>
+      <tabbar></tabbar>
   </div>
   <div class="mine-layout" v-show="is_login">
     <section class="mine-header">

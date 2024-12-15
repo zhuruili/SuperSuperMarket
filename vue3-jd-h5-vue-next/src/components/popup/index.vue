@@ -24,6 +24,31 @@
   </div>
 </template>
 
+<!-- <script setup>
+import { defineProps, defineEmits } from 'vue';
+
+const props = defineProps({
+  popupShow: {
+    type: Boolean,
+    default: false
+  },
+  popupTitle: {
+    type: String,
+    default: ""
+  }
+});
+
+const emits = defineEmits(['cancel', 'confirm']);
+
+const cancelPopup = () => {
+  emits('cancelPopup');
+};
+
+const confirmPopup = () => {
+  emits('confirmPopup');
+};
+</script> -->
+
 <script>
 export default {
   name: "popup",
