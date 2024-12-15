@@ -12,43 +12,43 @@
           :class="{ active: orderType === 1 }"
           data-type="1"
           @click="selectTag"
-          >全部(5)</span
+          >全部 {{ total }} </span
         >
         <span
           :class="{ active: orderType === 2 }"
           data-type="2"
           @click="selectTag"
-          >已取消(1)</span
+          >已取消</span
         >
         <span
           :class="{ active: orderType === 3 }"
           data-type="3"
           @click="selectTag"
-          >待支付(1)</span
+          >待支付</span
         >
         <span
           :class="{ active: orderType === 4 }"
           data-type="4"
           @click="selectTag"
-          >待发货(1)</span
+          >待发货</span
         >
         <span
           :class="{ active: orderType === 5 }"
           data-type="5"
           @click="selectTag"
-          >已支付(1)</span
+          >已支付</span
         >
         <span
           :class="{ active: orderType === 6 }"
           data-type="6"
           @click="selectTag"
-          >已完成(1)</span
+          >已完成</span
         >
         <span
           :class="{ active: orderType === 7 }"
           data-type="7"
           @click="selectTag"
-          >待收货(1)</span
+          >待收货</span
         >
       </section>
     </list-scroll>
@@ -365,7 +365,8 @@ import AxiosPlugin, { httpInstance } from '@/plugins/axios'
 
 
 const axios= inject('axios')
-    const orderType = ref(1); // 当前订单类型
+const orderType = ref(1); // 当前订单类型
+const total = ref(10); // 订单总数
 const orders = ref([
   {
     id: 1,
