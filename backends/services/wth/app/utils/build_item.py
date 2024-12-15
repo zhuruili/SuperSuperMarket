@@ -14,29 +14,29 @@ def create_database():
         cursor.execute("""
                 DROP DATABASE IF EXISTS ecommerce;
         """)
-        # 创建数据库
-        cursor.execute("create database ecommerce default character set gbk collate gbk_chinese_ci ")
-
-        # 选择数据库
-        cursor.execute("USE ecommerce")
-
-        cursor.execute("""
-        DROP TABLE IF EXISTS item;
-""")
-        # 创建用户表
-        cursor.execute('''
-          create table item(
-	item_ID int primary key,	
-	title varchar(500),			
-	pic_url varchar(200),		
-	price float,				
-	sale varchar(50),			
-	shop_name varchar(100),		
-	store int,					
-	kind int,					
-	url varchar(500)			
-);
-        ''')
+#         # 创建数据库
+#         cursor.execute("create database ecommerce default character set gbk collate gbk_chinese_ci ")
+#
+#         # 选择数据库
+#         cursor.execute("USE ecommerce")
+#
+#         cursor.execute("""
+#         DROP TABLE IF EXISTS item;
+# """)
+#         # 创建用户表
+#         cursor.execute('''
+#           create table item(
+# 	item_ID int primary key,
+# 	title varchar(500),
+# 	pic_url varchar(200),
+# 	price float,
+# 	sale varchar(50),
+# 	shop_name varchar(100),
+# 	store int,
+# 	kind int,
+# 	url varchar(500)
+# );
+#         ''')
 
         conn.commit()
         cursor.close()

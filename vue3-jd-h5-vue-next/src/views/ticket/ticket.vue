@@ -24,7 +24,7 @@
           <div class="store-coupon">
             <p class="value">{{ coupon.kind }}券</p>
             <p class="desc">{{ coupon.due_time }}过期</p>
-            <button @click="useCoupon(coupon)" class="btn click-btn">CLICK ON ></button>
+            <button @click="useCoupon(index)" class="btn click-btn">CLICK ON ></button>
           </div>
           <!-- 库存 -->
           <div class="platform-coupon">
@@ -39,10 +39,12 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive,onMounted,ref } from "vue";
 import axios from "axios";
+import AxiosPlugin, { httpInstance } from '@/plugins/axios'
 // 定义优惠券数据
-const coupons = reactive([
+
+const coupons = ref([
   {
     id:1,
     discount: 150,
@@ -89,30 +91,50 @@ const coupons = reactive([
 ]);
 
 
+ onMounted (async () => {
+  
+  try {
+    console.log("res")
+    const response = await httpInstance.post("http://127.0.0.1:8889/get_ticket");
+    console.log(response);
+    if (response.data.status === 'success') {
+      coupons.value = response.data.data.map(ticket => ({
+        id: ticket.ticket_ID,
+        discount: ticket.discount,
+        kind: ticket.kind,
+        storage: ticket.store,
+        info: ticket.info,
+        create_time: ticket.create_time,
+        due_time: ticket.due_time
+      }));
+console.log(coupons)
+    } else {
+      errorMessage.value = response.data.message || "获取优惠券失败";
+    }
+  } catch (e) {
+    console.log("没有优惠券");
+  }
+});
 
 const useCoupon=async(index)=>{
-  console.log(index)//这个是第几个：
-  try{
-    //拿到用户信息+优惠券id进行减库存：+创建用户券信息
-
-    const res=await axios.post("http://localhost:8889/ticket",{
-      coupon_id:coupons[index].id,
-      user_id:1,
-
-    })
-    if(res.data.code==200){
-      alert('领取成功')
-    }
-    else{
-      alert('领取失败')
-    }
-    
-  }
-  catch(e){
-    alert('领取失败')
-  }
-
-  alert('领取成功')//领取成功，删除该优惠券
+  console.log("jj"+index)//这个是第几个：
+ // try {
+    const userId = localStorage.getItem('userId');
+    console.log("id"+coupons.value[index].id);
+    const res = await httpInstance.post('http://127.0.0.1:8889/addticket', {
+      coupon_id: coupons.value[index].id,
+      user_id: userId,
+    },{headers: {
+    'Content-Type': 'application/json'
+  }});
+console.log(res);
+    // if (res.data.status === 200) {
+    //   alert('领取成功');
+    //   coupons.value.splice(index, 1); // 从列表中删除已领取的优惠券
+    // } else {
+    //   alert(res.data.message || '领取失败');
+    // }
+ // } 
 
 
   //库存不足，失败：alert('库存不足')
