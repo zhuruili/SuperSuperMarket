@@ -52,7 +52,8 @@
         >
       </section>
     </list-scroll>
-    <section class="order-card" v-show="orderType == 1 || orderType == 3">
+    
+    <!-- <div class="order-card"  v-show="orderType == 1 || orderType == 3">
       <ul class="order-list">
         <li class="order-item">
           <div class="store-info">
@@ -86,8 +87,12 @@
           <router-link tag="span" to="/order/orderDetail">去支付</router-link>
         </li>
       </ul>
-    </section>
-    <section class="order-card" v-show="orderType == 1 || orderType == 5">
+    </div>
+
+
+
+    <div>HTML</div> -->
+    <!-- <section class="order-card" v-show="orderType == 1 || orderType == 5">
       <ul class="order-list">
         <li class="order-item">
           <div class="store-info">
@@ -267,8 +272,8 @@
           <router-link to="/order/appeal" tag="span">商品申诉</router-link>
         </li>
       </ul>
-    </section>
-    <section class="may-like">
+    </section> -->
+   <!--  <section class="may-like">
       <ul class="like-list">
         <span class="like-title">猜你喜欢</span>
         <li class="like-item">
@@ -306,20 +311,95 @@
           </div>
         </li>
       </ul>
-    </section>
+    </section> -->
+    <div v-for="order in orders" :key="order.id" class="order-card">
+    <ul class="order-list">
+      <li class="order-item">
+        <div class="store-info">
+          <img
+            src="../../assets/image/product/store-headerM.png"
+            class="header-img"
+          />
+          <span>{{ order.storeName }}</span>
+          <span v-if="order.type !== 1">订单号:{{ order.orderNumber }}</span>
+        </div>
+        <span>{{ order.status }}</span>
+      </li>
+      <li class="order-info">
+        <img :src="order.productImage" alt />
+        <div class="order-detail">
+          <p class="info-one">
+            <span>{{ order.productName }}</span>
+            <span>{{ order.productPrice }}</span>
+          </p>
+          <p class="info-two">
+            <span>{{ order.specifications }}</span>
+            <span>×{{ order.quantity }}</span>
+          </p>
+        </div>
+      </li>
+      <li class="order-count">
+        <span>共{{ order.quantity }}件商品,小计:</span>
+        <i>${{ order.totalPrice }}</i>
+      </li>
+      <li class="order-btn">
+        <router-link v-if="order.type === 1" tag="span" to="/order/cancelOrder">取消订单</router-link>
+        <router-link v-if="order.type === 1" tag="span" to="/order/orderDetail">去支付</router-link>
+        <router-link v-if="order.type === 2 || order.type === 4 || order.type === 5" tag="span" to="/order/appeal">申诉</router-link>
+        <router-link v-if="order.type === 6 || order.type === 7" tag="span" to="/order/viewLogistics">查看物流</router-link>
+        <router-link v-if="order.type === 6 || order.type === 7" tag="span" to="/order/appeal">商品申诉</router-link>
+      </li>
+    </ul>
+  </div>
+
+
   </div>
 </template>
 
-<script>
+<script setup>
 import ListScroll from "@/components/scroll/ListScroll";
-import { getCurrentInstance, onMounted, reactive, ref, toRefs } from "vue";
-export default {
-  name: "Order",
-  components: {
-    ListScroll
+import { getCurrentInstance, onMounted, reactive, ref, toRefs ,inject} from "vue";
+import AxiosPlugin, { httpInstance } from '@/plugins/axios'
+
+
+
+
+const axios= inject('axios')
+    const orderType = ref(1); // 当前订单类型
+const orders = ref([
+  {
+    id: 1,
+    storeName: '店铺名称',
+    orderNumber: '201905211540350025',
+    productImage: '../../assets/image/product/store-headerM.png', // 添加产品图片 URL
+    productName: '娜扎新装LOOK',
+    productPrice: '$248',
+    specifications: '型号;规格;颜色;',
+    quantity: 2,
+    totalPrice: 496,
+    status: '待支付',
+    type: 1,
   },
-  setup() {
-    const orderType = ref(1);
+  {
+    id: 2,
+    storeName: '店铺名称',
+    orderNumber: '201905211540350025',
+    productImage: '', // 添加产品图片 URL
+    productName: '娜扎新装LOOK',
+    productPrice: '$248',
+    specifications: '型号;规格;颜色;',
+    quantity: 2,
+    totalPrice: 496,
+    status: '已支付',
+    type: 5,
+  },
+  // 添加其他类型的订单...
+]);
+
+const shouldShowOrder=(type) =>{
+  return orderType.value === 1 || orderType.value === type;
+}
+    //const orderType = ref(1);
     const { ctx } = getCurrentInstance();
 
     const searchWrap = ref(null);
@@ -336,22 +416,44 @@ export default {
       categoryData: []
     });
 
-    onMounted(() => {
+    onMounted(async() => {
+      console.log(axios)
+      try{
+        //拿到用户数据后，获取订单数据
+        //构造数据
+        const username=localStorage.getItem("user")
+        const data = { username };  // 构造数据格式，发送用户名
+       const res=await httpInstance.post('localhost:8080/getOrder',data)
+       /* id: 2,
+    storeName: '店铺名称',
+    orderNumber: '201905211540350025',
+    productImage: '', // 添加产品图片 URL
+    productName: '娜扎新装LOOK',
+    productPrice: '$248',
+    specifications: '型号;规格;颜色;',
+    quantity: 2,
+    totalPrice: 496,
+    status: '已支付',
+    type: 5, */
+        //返回订单数据：订单类型，
+
+        //构造orders数据:
+        
       setSearchWrapWidth();
       ctx.$eventBus.$emit("changeTag", 1);
+    
+    
+    }
+      catch(error){
+        console.log(error)
+      }
     });
 
-    return {
-      orderType,
-      setSearchWrapWidth,
-      selectTag,
-      searchWrap,
-      ...toRefs(state)
-    };
-  },
+  
+  
 
   methods: {}
-};
+
 </script>
 
 <style scoped lang="scss">

@@ -28,7 +28,7 @@
       :show-indicators="false"
     >
       <van-swipe-item v-for="(image, index) in homeImgs" :key="index">
-        <img class="lazy_img" @click="handleClick" :src="image.imgUrl" />
+        <img class="lazy_img" @click="handleClick" :src="require('@/assets/image/autoChange/首页轮播1.png')" />
       </van-swipe-item>
     </van-swipe>
 
@@ -49,7 +49,7 @@
           <svg-icon class="tags-icon" icon-class="collar-cm"></svg-icon>
           <span class="item-text">领CM币</span>
         </router-link>
-        <router-link tag="li" class="tags-item" to="./search">
+        <router-link tag="li" class="tags-item" to="./ticket">
           <svg-icon class="tags-icon" icon-class="coupon-svg"></svg-icon>
           <span class="item-text">领券</span>
         </router-link>
@@ -59,6 +59,7 @@
         </router-link>
       </ul>
     </section>
+ 
 
     <section class="spike-area">
       <ul class="spike-top">
