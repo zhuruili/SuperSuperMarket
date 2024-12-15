@@ -479,8 +479,8 @@ export default {
 
 /* 修改轮播图 */
 .swiper-carousel {
-  width: 1050px;
-  height: 300px;
+  width: 800px;
+  height: 250px;
   margin-left: 90px;
   margin-right: 900px;
   position: relative;
