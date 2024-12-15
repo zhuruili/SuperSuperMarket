@@ -12,43 +12,43 @@
           :class="{ active: orderType === 1 }"
           data-type="1"
           @click="selectTag"
-          >全部 {{ total }} </span
+          >全部(5)</span
         >
         <span
           :class="{ active: orderType === 2 }"
           data-type="2"
           @click="selectTag"
-          >已取消</span
+          >已取消(1)</span
         >
         <span
           :class="{ active: orderType === 3 }"
           data-type="3"
           @click="selectTag"
-          >待支付</span
+          >待支付(1)</span
         >
         <span
           :class="{ active: orderType === 4 }"
           data-type="4"
           @click="selectTag"
-          >待发货</span
+          >待发货(1)</span
         >
         <span
           :class="{ active: orderType === 5 }"
           data-type="5"
           @click="selectTag"
-          >已支付</span
+          >已支付(1)</span
         >
         <span
           :class="{ active: orderType === 6 }"
           data-type="6"
           @click="selectTag"
-          >已完成</span
+          >已完成(1)</span
         >
         <span
           :class="{ active: orderType === 7 }"
           data-type="7"
           @click="selectTag"
-          >待收货</span
+          >待收货(1)</span
         >
       </section>
     </list-scroll>
@@ -365,8 +365,7 @@ import AxiosPlugin, { httpInstance } from '@/plugins/axios'
 
 
 const axios= inject('axios')
-const orderType = ref(1); // 当前订单类型
-const total = ref(10); // 订单总数
+    const orderType = ref(1); // 当前订单类型
 const orders = ref([
   {
     id: 1,
@@ -422,9 +421,34 @@ const shouldShowOrder=(type) =>{
       try{
         //拿到用户数据后，获取订单数据
         //构造数据
-        const username=localStorage.getItem("user")
-        const data = { username };  // 构造数据格式，发送用户名
-       const res=await httpInstance.post('localhost:8080/getOrder',data)
+        const userID=localStorage.getItem("userId")
+      
+       // 发起请求，传入userId
+    const res = await httpInstance.post('http://localhost:8889/getOrder', {
+      userId:userID
+    },{headers: {
+    'Content-Type': 'application/json'
+  }});
+  console.log(res)
+    // 检查响应结果
+    if (res.data && res.data.orders) {
+      // 格式化数据
+      orders.value = res.data.orders.map(order => ({
+        id: order.item_ID,
+        storeName: order.shop_name, // 假定需要从其他地方获取或后端提供
+        orderNumber: order.count,
+        productImage: order.pic_url, // 示例图片路径
+        productName: order.title || '未知商品', // 根据后端返回字段
+        productPrice: order.price,
+        specifications: order.specifications || '无规格信息',
+        quantity: order.count,
+        totalPrice: order.price * order.count,
+        status: order.state === 1 ? '待支付' : '已完成', // 示例状态映射
+        type: order.type || 1,
+      }));
+    } else {
+      console.warn("后端未返回订单数据");
+    }
        /* id: 2,
     storeName: '店铺名称',
     orderNumber: '201905211540350025',

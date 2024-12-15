@@ -18,15 +18,32 @@ def create_database():
         # 选择数据库
         cursor.execute("USE ecommerce")
 
+        cursor.execute("""
+        ALTER TABLE users MODIFY COLUMN user_ID INT AUTO_INCREMENT;
+
+        """)
+        cursor.execute("""
+                ALTER TABLE orders MODIFY COLUMN order_ID INT AUTO_INCREMENT;
+
+                """)
+        cursor.execute("""
+                ALTER TABLE ticket MODIFY COLUMN ticket_ID INT AUTO_INCREMENT;
+
+                """)
+        cursor.execute("""
+                ALTER TABLE userTicket MODIFY COLUMN userTicket_ID INT AUTO_INCREMENT;
+
+                """)
+
         # 创建用户表
-        cursor.execute('''
-            create table users(
-	user_ID int primary key,			
-	userName varchar(500) not null,		
-	passwords varchar(12) not null,		
-	state int		
-)
-        ''')
+#         cursor.execute('''
+#             create table users(
+# 	user_ID int primary key,
+# 	userName varchar(500) not null,
+# 	passwords varchar(12) not null,
+# 	state int
+# )
+#         ''')
 
         conn.commit()
         cursor.close()
@@ -46,22 +63,25 @@ def insert_product():
         conn = mysql.connector.connect(
             host='localhost',
             user='root',
-            password='123456',
-            database='super_supermarket'
+            password='1234',
+            database='ecommerce'
         )
         cursor = conn.cursor()
 
         # 读取数据
-        path = 'backends\\dataset\\itemsInfo.csv'
+        path = r"backends\dataset\itemsInfo.csv"
+        # cursor.execute('''
+        #     LOAD DATA INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\itemsInfo.csv' replace
+        #     INTO TABLE item
+        #     CHARACTER SET gbk
+        #     FIELDS TERMINATED BY ','
+        #     LINES TERMINATED BY '\r\n';
+        # ''')
         df = pd.read_csv(path, header=None, names=['id', 'title', 'pic_url', 'price', 'sale', 'shop_name', 'storage', 'kind', 'url'])
-
-        # 填充空值
-        df = df.fillna('')
-
         # 插入数据到数据库
         for _, row in df.iterrows():
             cursor.execute('''
-                INSERT IGNORE INTO products (id, title, pic_url, price, sale, shop_name, storage, kind, url)
+                INSERT IGNORE INTO item (item_Id, title, pic_url, price, sale, shop_name, store, kind, url)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             ''', tuple(row))
 
@@ -73,6 +93,7 @@ def insert_product():
     except mysql.connector.Error as err:
         print(err)
 
+
 if __name__ == "__main__":
-     create_database()
+    create_database()
     #insert_product()

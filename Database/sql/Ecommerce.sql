@@ -77,3 +77,37 @@ create table merchandise(
     foreign key (user_ID) references users(user_ID),
     foreign key (item_id) references item(item_ID)
 );
+
+
+
+
+
+-- 触发器：
+DELIMITER $$
+
+CREATE TRIGGER before_insert_userTicket
+BEFORE INSERT ON userTicket
+FOR EACH ROW
+BEGIN
+    -- 检查库存是否足够
+    DECLARE available_stock INT;
+
+    SELECT store INTO available_stock
+    FROM ticket
+    WHERE ticket_ID = NEW.ticket_ID;
+
+    IF available_stock <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = '库存不足';
+    END IF;
+
+    -- 扣减库存
+    UPDATE ticket
+    SET store = store - 1
+    WHERE ticket_ID = NEW.ticket_ID;
+END$$
+
+DELIMITER ;
+
+
+

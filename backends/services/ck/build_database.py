@@ -165,6 +165,6 @@ def create_table():
     print("Table created successfully.")
 
 if __name__ == "__main__":
-    # create_database()
+    create_database()
     create_table()
     # insert_product()
