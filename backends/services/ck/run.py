@@ -158,6 +158,35 @@ def home():
 
     return jsonify(selected_items)
 
+@app.route('/category', methods=['POST'])
+def category():
+    data = request.get_json()
+    category = data.get('category')
+    print('category' + category)
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    kind = {
+        '电脑': 1,
+        '手机': 2,
+        '女装': 3,
+        '食品': 4,
+        '宠物': 5,
+        '美妆': 6,
+        '鲜花': 7,
+        '图书': 8
+        }
+
+    # 根据类别构建视图名称
+    view_name = f'item_kind{kind[category]}'
+
+    # 查询指定 category 的记录
+    cursor.execute(f'SELECT * FROM {view_name} LIMIT 90')
+    selected_items = cursor.fetchall()
+    conn.close()
+
+    return jsonify(selected_items)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5678)
     print('服务器关闭')
