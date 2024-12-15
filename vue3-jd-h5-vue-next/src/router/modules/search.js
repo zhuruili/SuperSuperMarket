@@ -5,6 +5,6 @@ export default [
     meta: {
       index: 17
     },
-    component: () => import('@/views/search/index.vue')
+    component: () => import('@/views/search/myindex.vue')
   }
 ]

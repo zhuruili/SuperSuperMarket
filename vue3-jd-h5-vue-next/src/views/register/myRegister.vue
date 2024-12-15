@@ -16,6 +16,7 @@
             </div>
         </form>
     </div>
+    <tabbar></tabbar>
 </template>
 
 <script setup>
