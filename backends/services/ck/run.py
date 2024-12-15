@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import mysql.connector
+import random
+
 
 from utils import get_db_connection
 
@@ -140,6 +141,22 @@ def get_Order():
     conn.close()
     
     return jsonify({'data': result})
+
+@app.route('/', methods=['POST'])
+def home():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # 生成 18 个随机的 itemID
+    random_ids = random.sample(range(1, 12001), 18)
+    format_strings = ','.join(['%s'] * len(random_ids))
+
+    # 查询这些随机 itemID 对应的记录
+    cursor.execute(f'SELECT * FROM item WHERE item_ID IN ({format_strings})', tuple(random_ids))
+    selected_items = cursor.fetchall()
+    conn.close()
+
+    return jsonify(selected_items)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5678)

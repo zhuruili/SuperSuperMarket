@@ -61,7 +61,7 @@
     </section>
  
 
-    <section class="spike-area">
+    <!-- <section class="spike-area">
       <ul class="spike-top">
         <router-link class="top-left" to="/chainCatSpike" tag="li">
           <div class="item-top">
@@ -168,73 +168,27 @@
           </div>
         </router-link>
       </ul>
-    </section>
+    </section> -->
+      <div class="product-list">
+          <div v-for="product in products" :key="product.id" class="product-item">
+          <div class="product-image-container">
+              <img :src="product.pic_url" :alt="product.title" />
+              <div class="product-buttons">
+                  <button @click="purchase(product)">立即购买</button>
+                  <button @click="addToCart(product)">加入购物车</button>
+              </div>
+          </div>
+          <div class="product-info">
+              <p v-html="product.title"></p>
+              <div class="price-sale">
+              <p class="price">{{ '￥' + product.price }}</p>
+              <p class="sale">{{ product.sale }}</p>
+              </div>
+              <p class="shop-name">{{ product.shop_name }}</p>
+          </div>
+          </div>
+      </div>
 
-    <div class="content-tabs">
-      <van-tabs
-        :swipe-threshold="5"
-        title-inactive-color="#3a3a3a"
-        title-active-color="#D8182D"
-        background="transparent"
-        v-model="active"
-        animated
-      >
-        <van-tab
-          v-for="(list, index) in tabArray"
-          :title="list.describe"
-          :name="list.type"
-          :key="index"
-        >
-          <template #title>
-            <div class="slot-title">
-              <b class="tab-title">{{ list.title }}</b>
-              <!-- <span class="tab-name">{{list.describe}}</span> -->
-              <span class="tab-name">{{ list.name }}</span>
-            </div>
-          </template>
-
-          <section class="goods-box search-wrap">
-            <ul class="goods-content">
-              <li v-for="(item, index) in list.list" :key="index">
-                <router-link class="goods-img" tag="div" to="/classify/product">
-                  <img :src="item.img" />
-                </router-link>
-                <div class="goods-layout">
-                  <div class="goods-title">{{ item.productName }}</div>
-                  <span class="goods-div">{{ item.title }}</span>
-                  <div class="goods-desc">
-                    <span class="goods-price">
-                      <i>{{ item.productCnyPrice }}</i>
-                      <span class="force-value"
-                        >{{ item.forceValue }}倍算力</span
-                      >
-                    </span>
-                    <span class="add-icon" @click="addToCart($event, item)">
-                      <svg-icon icon-class="add"></svg-icon>
-                    </span>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </section>
-        </van-tab>
-      </van-tabs>
-    </div>
-    <div class="ballWrap">
-      <transition
-        @before-enter="beforeEnter"
-        @enter="enter"
-        @afterEnter="afterEnter"
-      >
-        <div class="ball" v-if="show">
-          <li class="inner">
-            <span class="cubeic-add" @click="addToCart($event, item)">
-              <svg-icon class="add-icon" icon-class="add"></svg-icon>
-            </span>
-          </li>
-        </div>
-      </transition>
-    </div>
     <tabbar></tabbar>
   </div>
 </template>
@@ -244,6 +198,8 @@ import { ref, reactive, onMounted, toRefs, getCurrentInstance } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import Tabbat from "@/components/tabbar";
+import axios from 'axios'
+
 export default {
   name: "home",
   components: {
@@ -259,6 +215,7 @@ export default {
     const active = ref("");
     const timeData = ref(36000000);
     const headerActive = ref(false);
+    const products = ref([]);
 
     const state = reactive({
       homeImgs: [],
@@ -270,6 +227,18 @@ export default {
       el: ""
     });
 
+    const refreshHome = async () => {
+      axios.post('http://127.0.0.1:5678/', {}).then(res => {
+        console.log(res.data.length)
+        // 刷新商品列表
+        products.value = [];
+
+        for (let i = 0; i < res.data.length; i++) {
+            products.value.push({ id: res.data[i]['item_ID'], title: res.data[i]['title'], pic_url: res.data[i]['pic_url'], price: res.data[i]['price'], sale: res.data[i]['sale'], shop_name: res.data[i]['shop_name'], storage: res.data[i]['store'], kind: res.data[i]['kind'], url: res.data[i]['url'] })
+        }
+      })
+    };
+
     ctx.$http.get("http://test.happymmall.com/home/homeData").then(res => {
       const { images, tabList } = res.data;
       state.tabArray = tabList;
@@ -279,6 +248,7 @@ export default {
     onMounted(() => {
       ctx.$eventBus.$emit("changeTag", 0);
       window.addEventListener("scroll", pageScroll);
+      refreshHome();
     });
 
     const addToCart = (event, tag) => {
@@ -336,10 +306,107 @@ export default {
       enter,
       afterEnter,
       handleClick,
-      pageScroll
+      pageScroll,
+      refreshHome,
+      products
     };
   }
 };
 </script>
 
-<style scoped lang="scss" src="./index.scss"></style>
+<style scoped>
+.show-results {
+  padding: 20px;
+}
+
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.product-item {
+  width: calc(16.66% - 10px); /* 每行放置六个商品 */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+  position: relative;
+}
+
+.product-item:hover {
+  transform: translateY(-5px);
+}
+
+.product-image-container {
+  position: relative;
+}
+
+.product-item img {
+  width: 100%;
+  height: auto;
+}
+
+.product-buttons {
+  display: none;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.product-item:hover .product-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.product-buttons button {
+  background-color: #fff;
+  color: #333;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background-color 0.3s;
+}
+
+.product-buttons button:hover {
+  background-color: #ddd;
+}
+
+.product-info {
+  padding: 10px;
+  text-align: center;
+}
+
+.product-info p {
+  margin: 5px 0;
+}
+
+.product-info .price-sale {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-info .price {
+  font-size: 15px;
+  color: #ff5000;
+}
+
+.product-info .sale {
+  font-size: 12px;
+  color: #999;
+}
+
+.product-info .shop-name {
+  font-size: 10px;
+  color: #666;
+  text-align: left;
+}
+</style>
