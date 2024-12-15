@@ -235,7 +235,6 @@
         </div>
       </transition>
     </div>
-    ddd
     <tabbar></tabbar>
   </div>
 </template>
