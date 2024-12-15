@@ -40,15 +40,19 @@ def insert_product():
 
         # 读取数据
         path = 'backends\\dataset\\itemsInfo.csv'
+        # cursor.execute('''
+        #     LOAD DATA INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\itemsInfo.csv' replace
+        #     INTO TABLE item
+        #     CHARACTER SET gbk
+        #     FIELDS TERMINATED BY ','
+        #     LINES TERMINATED BY '\r\n';
+        # ''')
         df = pd.read_csv(path, header=None, names=['id', 'title', 'pic_url', 'price', 'sale', 'shop_name', 'storage', 'kind', 'url'])
-
-        # 填充空值
-        df = df.fillna('')
 
         # 插入数据到数据库
         for _, row in df.iterrows():
             cursor.execute('''
-                INSERT IGNORE INTO products (id, title, pic_url, price, sale, shop_name, storage, kind, url)
+                INSERT IGNORE INTO item (item_Id, title, pic_url, price, sale, shop_name, store, kind, url)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             ''', tuple(row))
 
@@ -71,15 +75,15 @@ def create_table():
 
     # 创建商品表
     cursor.execute('''
-        create table item(
+        create table IF NOT EXISTS item(
             item_ID int primary key,	/*商品ID*/
             title varchar(500),			/*商品名称*/
             pic_url varchar(200),		/*商品图片*/
-            sale varchar(50),			/*上坪销量*/
             price float,				/*商品价格*/
+            sale varchar(50),			/*上坪销量*/
             shop_name varchar(100),		/*店铺名称*/
             store int,					/*库存数量*/
-            kind int unique,			/*商品种类*/
+            kind int,			/*商品种类*/
             url varchar(500)			/*商品详情链接*/
         );
     ''')
@@ -117,8 +121,7 @@ def create_table():
             info varchar(200),			/*描述信息*/
             discount float,				/*折扣*/
             create_time date,			/*生效时间*/
-            due_time date,				/*过期时间*/
-            foreign key (kind) references item(kind)
+            due_time date				/*过期时间*/
         );
     ''')
     
@@ -163,5 +166,5 @@ def create_table():
 
 if __name__ == "__main__":
     # create_database()
-    # insert_product()
-    create_table()
+    # create_table()
+    insert_product()

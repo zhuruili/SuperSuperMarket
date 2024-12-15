@@ -36,7 +36,7 @@ def search():
     )
     cursor = conn.cursor()
 
-    cursor.execute(f"SELECT * FROM products WHERE title LIKE '%{query}%' AND kind={id}")
+    cursor.execute(f"SELECT * FROM item WHERE title LIKE '%{query}%' AND kind={id}")
     result = cursor.fetchall()
     return jsonify({'data': result})
 
