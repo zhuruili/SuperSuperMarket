@@ -22,7 +22,7 @@ A simple shopping web application
 
 - [X] 数据项汇总与得分点对应
 - [X] 数据库设计与类图绘制
-- [ ] 数据爬取(ing)
+- [X] 数据爬取
 - [ ] 建立数据库(ing)
 - [X] 前端设计
 
@@ -40,7 +40,7 @@ A simple shopping web application
 
 ## 数据爬取
 
-商品信息来源为某宝，数据写入csv文件以便后续建立数据库
+商品信息来源为某宝，商品条目数总计12857条，以csv保存后续录入数据库
 
 ### 数据项汇总
 

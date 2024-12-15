@@ -35,14 +35,14 @@ linkDict = {
 
 # 参数设置
 port = 9222 # Chrome remote port
-SearchItem = "鲜花"  # 搜索内容
-ItemKind = 7 # 商品种类
+SearchItem = "图书"  # 搜索内容
+ItemKind = 8 # 商品种类
 listener = 'h5/mtop.relationrecommend.wirelessrecommend.recommend/2.0'  # 监听器
 itemLink = linkDict[SearchItem]  # 商品链接
 nextPageBtn = 'css:button.next-btn.next-medium.next-btn-normal.next-pagination-item.next-next'
-itemNum = 9754 # 商品累计数量,充当第一列id
+itemNum = 11340 # 商品累计数量,充当第一列id
 json_data = {}  # 存放数据
-SaveOrNot = True  # 是否保存数据,如果不保存就填False
+SaveOrNot = False  # 是否保存数据,如果不保存就填False
 SAVEPATH = "backends\\dataset"  # 数据保存路径
 FilePath = SAVEPATH + "\\" + 'itemsInfo' + ".csv"  
 r = Recorder(FilePath)
