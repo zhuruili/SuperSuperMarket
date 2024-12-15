@@ -12,43 +12,43 @@
           :class="{ active: orderType === 1 }"
           data-type="1"
           @click="selectTag"
-          >全部(5)</span
+          >全部 {{ total }} </span
         >
         <span
           :class="{ active: orderType === 2 }"
           data-type="2"
           @click="selectTag"
-          >已取消(1)</span
+          >已取消</span
         >
         <span
           :class="{ active: orderType === 3 }"
           data-type="3"
           @click="selectTag"
-          >待支付(1)</span
+          >待支付</span
         >
         <span
           :class="{ active: orderType === 4 }"
           data-type="4"
           @click="selectTag"
-          >待发货(1)</span
+          >待发货</span
         >
         <span
           :class="{ active: orderType === 5 }"
           data-type="5"
           @click="selectTag"
-          >已支付(1)</span
+          >已支付</span
         >
         <span
           :class="{ active: orderType === 6 }"
           data-type="6"
           @click="selectTag"
-          >已完成(1)</span
+          >已完成</span
         >
         <span
           :class="{ active: orderType === 7 }"
           data-type="7"
           @click="selectTag"
-          >待收货(1)</span
+          >待收货</span
         >
       </section>
     </list-scroll>
@@ -329,7 +329,7 @@
         <img :src="order.productImage" alt />
         <div class="order-detail">
           <p class="info-one">
-            <span>{{ order.productName }}</span>
+            <span v-html="order.productName"></span>
             <span>{{ order.productPrice }}</span>
           </p>
           <p class="info-two">
@@ -358,101 +358,44 @@
 
 <script setup>
 import ListScroll from "@/components/scroll/ListScroll";
-import { getCurrentInstance, onMounted, reactive, ref, toRefs ,inject} from "vue";
-import AxiosPlugin, { httpInstance } from '@/plugins/axios'
+import { getCurrentInstance, onMounted, reactive, ref, toRefs, inject } from "vue";
+import axios from "axios";
 
 
+const orderType = ref(1); // 当前订单类型
+const total = ref(); // 订单总数
+const orders = ref([]);
 
-
-const axios= inject('axios')
-    const orderType = ref(1); // 当前订单类型
-const orders = ref([
-  {
-    id: 1,
-    storeName: '店铺名称',
-    orderNumber: '201905211540350025',
-    productImage: '../../assets/image/product/store-headerM.png', // 添加产品图片 URL
-    productName: '娜扎新装LOOK',
-    productPrice: '$248',
-    specifications: '型号;规格;颜色;',
-    quantity: 2,
-    totalPrice: 496,
-    status: '待支付',
-    type: 1,
-  },
-  {
-    id: 2,
-    storeName: '店铺名称',
-    orderNumber: '201905211540350025',
-    productImage: '', // 添加产品图片 URL
-    productName: '娜扎新装LOOK',
-    productPrice: '$248',
-    specifications: '型号;规格;颜色;',
-    quantity: 2,
-    totalPrice: 496,
-    status: '已支付',
-    type: 5,
-  },
-  // 添加其他类型的订单...
-]);
-
-const shouldShowOrder=(type) =>{
-  return orderType.value === 1 || orderType.value === type;
-}
-    //const orderType = ref(1);
-    const { ctx } = getCurrentInstance();
-
-    const searchWrap = ref(null);
-    const setSearchWrapWidth = () => {
-      const { clientWidth } = document.documentElement;
-      searchWrap.value.style.width = clientWidth + 100 + "px";
-    };
-
-    const selectTag = e => {
-      orderType.value = parseInt(e.currentTarget.getAttribute("data-type"));
-    };
-
-    const state = reactive({
-      categoryData: []
-    });
-
-    onMounted(async() => {
-      console.log(axios)
-      try{
-        //拿到用户数据后，获取订单数据
-        //构造数据
-        const username=localStorage.getItem("user")
-        const data = { username };  // 构造数据格式，发送用户名
-       const res=await httpInstance.post('localhost:8080/getOrder',data)
-       /* id: 2,
-    storeName: '店铺名称',
-    orderNumber: '201905211540350025',
-    productImage: '', // 添加产品图片 URL
-    productName: '娜扎新装LOOK',
-    productPrice: '$248',
-    specifications: '型号;规格;颜色;',
-    quantity: 2,
-    totalPrice: 496,
-    status: '已支付',
-    type: 5, */
-        //返回订单数据：订单类型，
-
-        //构造orders数据:
-        
-      setSearchWrapWidth();
-      ctx.$eventBus.$emit("changeTag", 1);
-    
-    
-    }
-      catch(error){
-        console.log(error)
+const refreshOrder = async () => {
+  const username = localStorage.getItem('username');
+  axios.post('http://127.0.0.1:5678/getOrder', { user_name: username }).then(res => {
+    const data = res.data.data;
+    console.log(data)
+    orders.value = data.map(item => {
+      return {
+        id: item.order_id,
+        storeName: item.shop_name,
+        orderNumber: item.order_id,
+        productImage: item.pic_url,
+        productName: item.title,
+        productPrice: item.price,
+        // specifications: item.specifications,
+        quantity: item.count,
+        totalPrice: item.price * item.count,
+        status: item.state,
+        // type: item.type,
       }
-    });
+    })
+    total = ref(data.length);
+  })
+};
+
+onMounted(() => {
+  refreshOrder();
+});
 
   
   
-
-  methods: {}
 
 </script>
 

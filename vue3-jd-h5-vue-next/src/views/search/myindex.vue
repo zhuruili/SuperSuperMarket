@@ -17,8 +17,8 @@
                 <div class="product-image-container">
                     <img :src="product.pic_url" :alt="product.title" />
                     <div class="product-buttons">
+                        <button @click="purchase(product)">立即购买</button>
                         <button @click="addToCart(product)">加入购物车</button>
-                        <button @click="viewDetails(product)">查看详情</button>
                     </div>
                 </div>
                 <div class="product-info">
@@ -55,7 +55,7 @@ const search = () => {
     console.log('搜索', selectedCategory.value, searchQuery.value);
     // 刷新商品列表
     products.value = [];
-    
+
     axios.post('http://127.0.0.1:5678/search', { category: selectedCategory.value, query: searchQuery.value }).then((res) => {
         console.log(res.data.data)
         for (let i = 0; i < res.data.data.length; i++) {
@@ -66,12 +66,22 @@ const search = () => {
 
 const addToCart = (product) => {
   // 实现加入购物车逻辑
-  console.log('加入购物车', product);
+    console.log('加入购物车', product);
+    const user_name = localStorage.getItem('username')
+    axios.post('http://127.0.0.1:5678/addToCart', { user_name:user_name, item_id:product.id, count:'1' }).then((res) => {
+        console.log(res.data)
+        alert('加入购物车成功')
+    })
 };
 
-const viewDetails = (product) => {
-  // 实现查看详情逻辑
-    console.log('查看详情', product);
+const purchase = (product) => {
+  // 实现立即购买逻辑
+    console.log('立即购买', product);
+    const user_name = localStorage.getItem('username')
+    axios.post('http://127.0.0.1:5678/purchase', { user_name:user_name, item_id:product.id,  state:'0',  price:product.price,  count:'1' }).then((res) => {
+        console.log(res.data)
+        alert('购买成功')
+    })
 };
 </script>
 
