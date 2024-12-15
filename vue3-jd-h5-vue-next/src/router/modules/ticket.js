@@ -1,7 +1,7 @@
 export default [
     {
       path: '/ticket',
-      name: 'toBeDelivered',
+      name: 'getTicket',
       meta: {
         index: 50
       },

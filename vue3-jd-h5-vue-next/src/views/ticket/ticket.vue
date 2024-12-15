@@ -2,9 +2,12 @@
   <div class="coupon-container">
     <!-- 顶部策略标题 -->
     <div class="strategy-title">
+      <span class="btn-left" @click="$router.go(-1)">
+        <svg-icon icon-class="white-btn"></svg-icon>
+      </span>
       <h2>STRATEGY</h2>
       <p>先领券再购物 立享折上折</p>
-      <span>天猫津贴可以使用积分兑换/详情页/会场等方式领取</span>
+      <span>津贴可以使用积分兑换/详情页/会场等方式领取</span>
     </div>
 
     <!-- 优惠券区域 -->
@@ -13,20 +16,21 @@
         <!-- 实际满减 -->
         <div class="discount-circle">
           <p class="actual-discount">{{ coupon.discount }}</p>
-          <p class="threshold">满{{ coupon.threshold }}减{{ coupon.discount }}</p>
+          <p class="threshold">{{coupon.info}}</p>
         </div>
 
-        <!-- 优惠券详细 -->
+        <!-- 优惠券详细:哪个类别 过期时间 -->
         <div class="coupon-details">
           <div class="store-coupon">
-            <p class="value">￥{{ coupon.storeCoupon.value }}</p>
-            <p class="desc">满{{ coupon.storeCoupon.threshold }}减{{ coupon.storeCoupon.value }}</p>
-            <button class="btn click-btn">CLICK ON ></button>
+            <p class="value">{{ coupon.kind }}券</p>
+            <p class="desc">{{ coupon.due_time }}过期</p>
+            <button @click="useCoupon(coupon)" class="btn click-btn">CLICK ON ></button>
           </div>
+          <!-- 库存 -->
           <div class="platform-coupon">
-            <p class="value">￥{{ coupon.platformCoupon.value }}</p>
-            <p class="desc">满{{ coupon.platformCoupon.threshold }}减{{ coupon.platformCoupon.value }}</p>
-            <button class="btn use-btn">拿立即使用</button>
+            <p class="value">库存{{ coupon.storage }}</p>
+            <p class="desc">开始时间{{ coupon.create_time }}</p>
+            <button @click="useCoupon(index)" class="btn use-btn">拿立即使用</button>
           </div>
         </div>
       </div>
@@ -36,34 +40,83 @@
 
 <script setup>
 import { reactive } from "vue";
-
+import axios from "axios";
 // 定义优惠券数据
 const coupons = reactive([
   {
+    id:1,
     discount: 150,
-    threshold: 1100,
-    storeCoupon: { value: 50, threshold: 1000 },
-    platformCoupon: { value: 100, threshold: 1000 },
+    
+    kind: "电脑",
+    storage: 100,
+    info: "满1000减50",
+    create_time: "2023-12-25",
+    due_time: "2023-12-31",
+    
   },
   {
+    id:2,
     discount: 450,
-    threshold: 3300,
-    storeCoupon: { value: 150, threshold: 3000 },
-    platformCoupon: { value: 300, threshold: 3000 },
+
+    kind: "电脑",
+    storage: 100,
+    info: "满1000减50",
+    create_time: "2023-12-25",
+    due_time: "2023-12-31",
+   
   },
   {
+    id:3,
     discount: 800,
-    threshold: 6500,
-    storeCoupon: { value: 300, threshold: 6000 },
-    platformCoupon: { value: 500, threshold: 5000 },
+    kind: "电脑",
+    storage: 100,
+    info: "满1000减50",
+    create_time: "2023-12-25",
+    due_time: "2023-12-31",
+    
   },
   {
+    id:4,
     discount: 1200,
-    threshold: 8800,
-    storeCoupon: { value: 400, threshold: 8000 },
-    platformCoupon: { value: 800, threshold: 8000 },
+    
+    kind: "电脑",
+    storage: 100,
+    info: "满1000减50",
+    create_time: "2023-12-25",
+    due_time: "2023-12-31",
+    
   },
 ]);
+
+
+
+const useCoupon=async(index)=>{
+  console.log(index)//这个是第几个：
+  try{
+    //拿到用户信息+优惠券id进行减库存：+创建用户券信息
+
+    const res=await axios.post("http://localhost:8889/ticket",{
+      coupon_id:coupons[index].id,
+      user_id:1,
+
+    })
+    if(res.data.code==200){
+      alert('领取成功')
+    }
+    else{
+      alert('领取失败')
+    }
+    
+  }
+  catch(e){
+    alert('领取失败')
+  }
+
+  alert('领取成功')//领取成功，删除该优惠券
+
+
+  //库存不足，失败：alert('库存不足')
+}
 </script>
 
 <style scoped>
@@ -173,5 +226,10 @@ const coupons = reactive([
 
 .use-btn {
   background: #6b217e;
+}
+.btn-left{
+  position: absolute;
+  left: 20px;
+  top:20px
 }
 </style>

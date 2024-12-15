@@ -28,7 +28,7 @@
       :show-indicators="false"
     >
       <van-swipe-item v-for="(image, index) in homeImgs" :key="index">
-        <img class="lazy_img" @click="handleClick" :src="image.imgUrl" />
+        <img class="lazy_img" @click="handleClick" :src="require('@/assets/image/autoChange/首页轮播1.png')" />
       </van-swipe-item>
     </van-swipe>
 
@@ -59,6 +59,7 @@
         </router-link>
       </ul>
     </section>
+ 
 
     <section class="spike-area">
       <ul class="spike-top">
