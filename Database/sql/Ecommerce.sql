@@ -34,9 +34,6 @@ create table orders(
     foreign key (item_ID) references item(item_ID)
 );
 
-alter table item
-add constraint unique_kind unique (kind);
-
 -- 优惠券表
 create table ticket(
 	ticket_ID int primary key,	/*优惠券ID*/
