@@ -96,3 +96,17 @@ def checkout():
     conn.close()
 
     return jsonify({'message': '订单已生成'})
+
+
+@app.route('/BackupDatabase', methods=['POST'])
+def backup():
+    """备份数据库"""
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # 备份数据库
+    cursor.execute('BACKUP DATABASE supersupermarket TO DISK = "C:/supersupermarket.bak"')
+    conn.commit()
+    conn.close()
+
+    return jsonify({'message': '数据库已备份'})
