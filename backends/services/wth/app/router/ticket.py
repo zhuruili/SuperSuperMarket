@@ -57,8 +57,6 @@ def show_ticket():
                 sql_query = "SELECT * FROM ticket WHERE due_time >= %s"
                 params = [datetime.date.today()]  # 查询未过期的优惠券
 
-
-
                 cursor.execute(sql_query, params)  # 执行查询
                 tickets = cursor.fetchall()  # 获取所有结果
 

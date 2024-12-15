@@ -90,6 +90,16 @@ const coupons = ref([
   },
 ]);
 
+const kind = ref({
+   1:'电脑',
+   2:'手机',
+   3:'女装',
+   4:'食品',
+   5:'宠物',
+   6:'美妆',
+   7:'鲜花',
+   8:'图书'
+});
 
  onMounted (async () => {
   
@@ -101,7 +111,7 @@ const coupons = ref([
       coupons.value = response.data.data.map(ticket => ({
         id: ticket.ticket_ID,
         discount: ticket.discount,
-        kind: ticket.kind,
+        kind: kind.value.ticket.kind,
         storage: ticket.store,
         info: ticket.info,
         create_time: ticket.create_time,
@@ -118,7 +128,7 @@ console.log(coupons)
 
 const useCoupon=async(index)=>{
   console.log("jj"+index)//这个是第几个：
- // try {
+  try {
     const userId = localStorage.getItem('userId');
     console.log("id"+coupons.value[index].id);
     const res = await httpInstance.post('http://127.0.0.1:8889/addticket', {
@@ -128,13 +138,17 @@ const useCoupon=async(index)=>{
     'Content-Type': 'application/json'
   }});
 console.log(res);
-    // if (res.data.status === 200) {
-    //   alert('领取成功');
-    //   coupons.value.splice(index, 1); // 从列表中删除已领取的优惠券
-    // } else {
-    //   alert(res.data.message || '领取失败');
-    // }
- // } 
+    if (res.data.status === 200) {
+      alert('领取成功');
+      //列表更新库存：
+      //coupons.value[index].storage -= 1; // 减少库存
+      coupons.value.splice(index, 1); // 从列表中删除已领取的优惠券
+    } else {
+      alert(res.data.message || '领取失败');
+    }
+ } catch (e) {
+   alert('领取失败');
+ }
 
 
   //库存不足，失败：alert('库存不足')
@@ -145,7 +159,8 @@ console.log(res);
 /* 背景与容器样式 */
 .coupon-container {
   background: linear-gradient(to bottom, #e6c0e8, #6b217e);
-  padding: 40px 20px;
+  /* padding: 40px 20px; */
+  min-height: 100vh; /* 让背景覆盖视口 */
   text-align: center;
   color: #fff;
   font-family: Arial, sans-serif;
