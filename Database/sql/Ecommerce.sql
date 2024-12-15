@@ -14,8 +14,8 @@ create table item(
 	item_ID int primary key,	/*商品ID*/
 	title varchar(500),			/*商品名称*/
 	pic_url varchar(200),		/*商品图片*/
-	sale varchar(50),			/*上坪销量*/
 	price float,				/*商品价格*/
+	sale varchar(50),			/*上坪销量*/
 	shop_name varchar(100),		/*店铺名称*/
 	store int,					/*库存数量*/
 	kind int,					/*商品种类*/
