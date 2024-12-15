@@ -79,9 +79,6 @@ create table merchandise(
 );
 
 
-
-
-
 -- 触发器：
 DELIMITER $$
 
@@ -108,6 +105,3 @@ BEGIN
 END$$
 
 DELIMITER ;
-
-
-
