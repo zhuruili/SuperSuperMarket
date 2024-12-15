@@ -41,6 +41,7 @@ A simple shopping web application
 后续的优化与改进。
 
 - [X] 主页界面美化
+- [X] 搜索界面美化
 - [X] 触发器与事务的应用
 - [ ] 备份
 
