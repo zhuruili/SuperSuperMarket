@@ -11,6 +11,7 @@ def get_users():
     data = request.json
     username = data.get('username')
     password = data.get('password')
+    print(username)
     print(password)
     # 检查是否有传递用户名和密码
     if not username or not password:
