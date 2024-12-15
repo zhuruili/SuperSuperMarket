@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 
+from utils import get_db_connection
+
 # 后端服务器启动
 app = Flask(__name__)
 CORS(app, resources=r'/*')
@@ -28,12 +30,7 @@ def search():
     id = kind.get(category)
 
     # 连接到 MySQL 服务器
-    conn = mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password='123456',
-        database='super_supermarket'
-    )
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute(f"SELECT * FROM item WHERE title LIKE '%{query}%' AND kind={id}")
@@ -42,12 +39,7 @@ def search():
 
 @app.route('/register', methods=['POST'])
 def register():
-    conn = mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password = '123456',
-        database='super_supermarket'
-    )
+    conn = get_db_connection()
     data = request.get_json()
     print(data)
     username = data.get('username')
@@ -71,12 +63,7 @@ def purchase():
     price = data.get('price')
     count = data.get('count')
 
-    conn = mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password = '123456',
-        database='super_supermarket'
-    )
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('select user_ID from users where userName=%s', [user_name])
     user_id = cursor.fetchone()[0]
@@ -93,12 +80,7 @@ def add_to_cart():
     item_id = data.get('item_id')
     count = data.get('count')
 
-    conn = mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password = '123456',
-        database='super_supermarket'
-    )
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('select user_ID from users where userName=%s', [user_name])
     user_id = cursor.fetchone()[0]
@@ -113,12 +95,7 @@ def get_cart():
     data = request.get_json()
     user_name = data.get('user_name')
 
-    conn = mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password = '123456',
-        database='super_supermarket'
-    )
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('select user_ID from users where userName=%s', [user_name])
     user_id = cursor.fetchone()[0]
@@ -132,12 +109,7 @@ def get_Order():
     user_name = data.get('user_name')
     print('用户名' + user_name)
 
-    conn = mysql.connector.connect(
-        host='localhost',
-        user='root',
-        password='123456',
-        database='super_supermarket'
-    )
+    conn = get_db_connection()
     cursor = conn.cursor()
     query = '''
         SELECT * FROM orders 
