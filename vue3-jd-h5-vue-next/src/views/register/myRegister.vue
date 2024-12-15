@@ -20,14 +20,16 @@
 </template>
 
 <script setup>
+import axios from 'axios';
 import { ref } from 'vue';
 
 const username = ref('');
 const password = ref('');
 
 const handleRegister = () => {
-    console.log('Username:', username.value);
-    console.log('Password:', password.value);
+    axios.post('http://127.0.0.1:5678/register', { username: username.value, password: password.value }).then((res) => {
+        alert('注册成功')
+    })
 };
 
 const handleCancel = () => {

@@ -3,11 +3,10 @@ from flask import Blueprint, render_template, request, redirect, url_for
 
 from backends.services.wth.app.utils.mysql_connect import get_connection
 
-users_bp = Blueprint('users', __name__)
+ticket_bp = Blueprint('ticket', __name__)
 
-@users_bp.route('/login',method=['POST'])
-def get_users():
-    #拿数据
+@ticket_bp.route('/ticket',method=["POST"])
+def get_ticket():
     try:
         with get_connection() as conn:#,它会从连接池中获取一个可用的连接。当 with 块结束时,连接会自动返回到连接池中,等待下次使用。
             with conn.cursor() as cursor:

@@ -6,7 +6,7 @@ db_config = {
     'user': 'root',
     'password': '1234',
     'host': '127.0.0.1',
-    'database': 'shopping'
+    'database': 'ecommerce'
 }
 
 # 创建连接池
@@ -23,6 +23,20 @@ def get_connection():
 # 关闭连接
 def close_connection(conn):
     conn.close()
+
+
+if __name__ == "__main__":
+    try:
+        with get_connection() as conn:#,它会从连接池中获取一个可用的连接。当 with 块结束时,连接会自动返回到连接池中,等待下次使用。
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT * FROM users")
+                users = cursor.fetchall()
+                print(f"success:{users}")
+
+    except Exception as e:
+        # 处理错误
+        print(f"Error getting users: {e}")
+
 
 
 """
