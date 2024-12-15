@@ -13,7 +13,7 @@ create table users(
 create table item(
 	item_ID int primary key,	/*商品ID*/
 	title varchar(500),			/*商品名称*/
-	pic_url varchar(200),		/*商品图片*/
+	pic_url varchar(500),		/*商品图片*/
 	price float,				/*商品价格*/
 	sale varchar(50),			/*上坪销量*/
 	shop_name varchar(100),		/*店铺名称*/
@@ -21,6 +21,11 @@ create table item(
 	kind int,					/*商品种类*/
 	url varchar(500)			/*商品详情链接*/
 );
+
+LOAD DATA INFILE 'D:\\Tools\\MySql\\Data\\MySQL Server 8.0\\Uploads\\itemsInfo.csv' INTO TABLE item
+CHARACTER SET utf8mb4
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\r\n'; 
 
 -- 订单表
 create table orders(
