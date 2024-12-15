@@ -66,12 +66,20 @@ def purchase():
 
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('select user_ID from users where userName=%s', [user_name])
-    user_id = cursor.fetchone()[0]
-    cursor.execute('insert into orders(user_id, item_id, state, price, count) values(%s, %s, %s, %s, %s)', [user_id, item_id, state, price, count])
-    conn.commit()
-    cursor.close()
-    conn.close()
+
+    try:
+        # 显式地开始事务：一起成功一起失败：
+        cursor.execute("START TRANSACTION;")
+        cursor.execute('select user_ID from users where userName=%s', [user_name])
+        user_id = cursor.fetchone()[0]
+        cursor.execute('insert into orders(user_id, item_id, state, price, count) values(%s, %s, %s, %s, %s)', [user_id, item_id, state, price, count])
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        print("创建订单失败")
+        return jsonify({'data': '购买失败'})
+    
     return jsonify({'data': '购买成功'})
 
 @app.route('/addToCart', methods=['POST'])

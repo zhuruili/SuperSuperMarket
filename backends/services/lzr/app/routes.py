@@ -21,6 +21,7 @@ def home():
 
 @app.route('/category', methods=['POST'])
 def category():
+    """根据类别展示商品"""
     data = request.get_json()
     category = data['category']
     conn = get_db()
