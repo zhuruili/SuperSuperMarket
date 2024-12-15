@@ -78,6 +78,3 @@ create table merchandise(
     foreign key (user_ID) references users(user_ID),
     foreign key (item_id) references item(item_ID)
 );
-
--- view
-
