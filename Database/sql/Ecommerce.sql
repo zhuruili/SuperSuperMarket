@@ -22,6 +22,7 @@ create table item(
 	url varchar(500)			/*商品详情链接*/
 );
 
+-- 导入商品信息
 LOAD DATA INFILE 'D:\\Tools\\MySql\\Data\\MySQL Server 8.0\\Uploads\\itemsInfo.csv' INTO TABLE item
 CHARACTER SET utf8mb4
 FIELDS TERMINATED BY ','
@@ -77,3 +78,6 @@ create table merchandise(
     foreign key (user_ID) references users(user_ID),
     foreign key (item_id) references item(item_ID)
 );
+
+-- view
+
