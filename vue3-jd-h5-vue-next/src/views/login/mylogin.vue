@@ -11,7 +11,7 @@
                 <input type="password" id="password" v-model="password" required />
             </div>
             <div class="button-group">
-                <button type="submit">登录</button>
+                <button @click="handleLogin"  type="submit">登录</button>
                 <button type="button" @click="handleCancel">取消</button>
             </div>
         </form>
@@ -22,24 +22,47 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-
+import axois from 'axios';
 const username = ref('');
 const password = ref('');
 const router = useRouter();
+import AxiosPlugin, { httpInstance } from '@/plugins/axios'
 
-const handleRegister = () => {
-    console.log('Username:', username.value);
-    console.log('Password:', password.value);
+const handleRegister = async() => {
+    try {
+        console.log('handleLogin');
+        // 发送登录请求
+        const response = await httpInstance.post("http://localhost:8889/login", {
+            username: username.value,
+            password: password.value
+        }, {
+            headers: {
+                'Content-Type': 'application/json'  // 设置正确的 Content-Type
+            }
+        });
+        console.log(response);
+        // 假设返回的 response 中有一个 `token` 字段，表示登录成功
+        if (response.status==200) {
+            console.log("Login successful!");
 
-    if (username.value === 'admin' && password.value === '123456') {
-        // 登录成功并保存用户信息到浏览器
-        localStorage.setItem('username', username.value);
-        localStorage.setItem('password', password.value);
-        localStorage.setItem('isLogin', true);
-        router.push('/mine');
-    } else {
-        alert('用户名或密码错误');
+            // 将 token 存储在 localStorage 中，或其他合适的地方
+           // localStorage.setItem('token', response.data.token);
+            localStorage.setItem('username', response.data.username);
+            localStorage.setItem('userId', response.data.userID);
+           // localStorage.setItem('password', password.value);
+            localStorage.setItem("isLogin",true);
+            console.log(localStorage.getItem("userId"))
+            // 跳转到登录成功后的页面，例如首页
+            router.push('/mine');
+        } else {
+            console.log("Login failed:", response.data.message);
+            alert(response.data.message);  // 提示错误消息
+        }
+    } catch (error) {
+        console.log("Error during login:", error);
+        alert("An error occurred while logging in");
     }
+
 };
 
 const handleCancel = () => {

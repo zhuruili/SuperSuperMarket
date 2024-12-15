@@ -1,21 +1,39 @@
 
 
 # routes/users.py
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 
 from backends.services.wth.app.utils.mysql_connect import get_connection
 
 order_bp = Blueprint('order', __name__)
 
-@order_bp.route('/')
+@order_bp.route('/getOrder',methods=["POST"])
 def get_order():
     try:
-        with get_connection() as conn:#,它会从连接池中获取一个可用的连接。当 with 块结束时,连接会自动返回到连接池中,等待下次使用。
-            with conn.cursor() as cursor:
-                cursor.execute("SELECT * FROM users")
-                users = cursor.fetchall()
-        return render_template('users.html', users=users)
+        # 获取请求体中的 userId
+        data = request.get_json()
+        user_id = data.get('userId')
+
+        if not user_id:
+            return jsonify({"error": "用户ID不能为空"}), 400
+
+        # 查询订单数据
+        query = """
+                SELECT o.order_ID, o.user_ID, o.item_ID, o.state, o.price, o.count, 
+                       i.title, i.pic_url ,i.shop_name
+                FROM orders o
+                JOIN item i ON o.item_ID = i.item_ID
+                WHERE o.user_ID = %s
+            """
+
+        with get_connection() as conn:  # 获取数据库连接
+            with conn.cursor(dictionary=True) as cursor:  # 使用字典格式返回数据
+                cursor.execute(query, (user_id,))
+                results = cursor.fetchall()
+
+        # 返回订单数据
+        return jsonify({"orders": results})
+
     except Exception as e:
-        # 处理错误
-        print(f"Error getting users: {e}")
-        return "Error occurred while fetching users", 500
+        print(f"查询订单失败: {e}")
+        return jsonify({"error": "服务器内部错误"}), 500
