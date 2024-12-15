@@ -24,11 +24,22 @@ def category(category):
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
+    kind = {
+        '电脑': 1,
+        '手机': 2,
+        '女装': 3,
+        '食品': 4,
+        '宠物': 5,
+        '美妆': 6,
+        '鲜花': 7,
+        '图书': 8
+        }
+
     # 根据类别构建视图名称
-    view_name = f'view_{category}'
+    view_name = f'item_kind{kind[category]}'
 
     # 查询指定 category 的记录
-    cursor.execute(f'SELECT * FROM {view_name}')
+    cursor.execute(f'SELECT * FROM {view_name} LIMIT 90')
     selected_items = cursor.fetchall()
     conn.close()
 
