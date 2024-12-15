@@ -49,7 +49,7 @@
           <svg-icon class="tags-icon" icon-class="collar-cm"></svg-icon>
           <span class="item-text">领CM币</span>
         </router-link>
-        <router-link tag="li" class="tags-item" to="./search">
+        <router-link tag="li" class="tags-item" to="./ticket">
           <svg-icon class="tags-icon" icon-class="coupon-svg"></svg-icon>
           <span class="item-text">领券</span>
         </router-link>

@@ -72,8 +72,8 @@ const errorHandle = (status, other) => {
 
 // 创建axios实例
 const instance = axios.create({
-  baseURL: process.env.VUE_APP_BASE_URL,
-  // baseURL: '',
+ // baseURL: process.env.VUE_APP_BASE_URL,
+   baseURL: '',
   timeout: 1000 * 12
 })
 // 设置post请求头
@@ -117,7 +117,7 @@ instance.interceptors.response.use(
       //   store.commit('changeNetwork', false);
     }
   })
-
+  export const httpInstance = instance;
 export default {
   install(app) {
     app.config.globalProperties.$http = instance
