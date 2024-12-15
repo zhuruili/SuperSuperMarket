@@ -10,17 +10,19 @@
 <template>
   <div class="home">
     <header class="home-header" :class="{ active: headerActive }">
-      <div class="header-search">
-        <svg-icon class="search-icon" icon-class="search"></svg-icon>
-        <router-link tag="span" class="search-title" to="./search"
-          >推荐搜索 关键词</router-link
-        >
-      </div>
-      <svg-icon
-        class="customer-service-icon"
-        icon-class="customer-service"
-      ></svg-icon>
-    </header>
+  <div class="header-left">
+    <div class="header-search">
+      <svg-icon class="search-icon" icon-class="search"></svg-icon>
+      <router-link tag="span" class="search-title" to="./search">
+        推荐搜索 关键词
+      </router-link>
+    </div>
+  </div>
+  <div class="header-right">
+    <svg-icon class="customer-service-icon" icon-class="customer-service"></svg-icon>
+  </div>
+</header>
+
     <van-swipe
       class="swiper-carousel"
       lazy-render
@@ -28,7 +30,7 @@
       :show-indicators="false"
     >
       <van-swipe-item v-for="(image, index) in homeImgs" :key="index">
-        <img class="lazy_img" @click="handleClick" :src="require('@/assets/image/autoChange/首页轮播1.png')" />
+        <img class="lazy_img" @click="handleClick" :src="image" />
       </van-swipe-item>
     </van-swipe>
 
@@ -53,10 +55,7 @@
           <svg-icon class="tags-icon" icon-class="coupon-svg"></svg-icon>
           <span class="item-text">领券</span>
         </router-link>
-        <router-link tag="li" class="tags-item" to="./search">
-          <svg-icon class="tags-icon" icon-class="chain-cat-member"></svg-icon>
-          <span class="item-text">链猫会员</span>
-        </router-link>
+
       </ul>
     </section>
  
@@ -242,7 +241,12 @@ export default {
     ctx.$http.get("http://test.happymmall.com/home/homeData").then(res => {
       const { images, tabList } = res.data;
       state.tabArray = tabList;
-      state.homeImgs = images;
+      state.homeImgs.push(
+  require('@/assets/image/autoChange/首页轮播1.png'),
+  require('@/assets/image/autoChange/首页轮播2.png'),
+  require('@/assets/image/autoChange/首页轮播3.png')
+);
+
     });
 
     onMounted(() => {
@@ -409,4 +413,160 @@ export default {
   color: #666;
   text-align: left;
 }
+/* 轮播图尺寸 */
+.lazy_img{
+  width: 100%;          /* 让图片宽度自适应容器 */
+  height: 100%;         /* 让图片高度自适应容器 */
+  object-fit: cover;    /* 确保图片覆盖整个容器 */
+  overflow: hidden;     /* 隐藏图片溢出的部分 */
+}
+
+/* 中间部分 */
+.home-tags{
+  padding: 15px 30px;  /* Increased padding for a larger space */
+  background-color: #f9f9f9;
+  text-align: center;  /* Center the content */
+  /* margin-top: 30px;  Add some space between carousel and tags */
+  border-radius: 15px;  /* Rounded corners for a softer look */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);  /* Subtle shadow to elevate the section */
+
+}
+.tags-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;  /* Increased gap for larger spacing between tags */
+  justify-content: center;  /* Center the tags horizontally */
+}
+
+.tags-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 25px;  /* Larger padding for more space around the text and icon */
+  background-color: #ffffff;
+  border-radius: 30px;  /* Rounded edges for each tag */
+  font-size: 18px;  /* Larger font size for better readability */
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  min-width: 150px;  /* Ensures each tag is wide enough */
+}
+
+.tags-item:hover {
+  background-color: #ff5000;  /* Hover effect for a vibrant look */
+  color: #fff;
+  transform: translateY(-5px);  /* Slightly lift the tag on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);  /* Subtle shadow to indicate interaction */
+}
+
+.tags-icon {
+  margin-right: 15px;  /* Increased space between icon and text */
+  width: 24px;  /* Adjust the size of the icons */
+  height: 24px;  /* Ensure the icon is bigger */
+}
+
+.item-text {
+  font-size: 18px;  /* Make the text larger */
+  font-weight: 500;  /* Bold the text slightly for more emphasis */
+}
+
+/* 修改轮播图
+.swiper-carousel{
+  width: 1200px;
+  height:300px;
+  margin-left:90px;
+  margin-right: 100px;
+} */
+
+/* 修改轮播图 */
+.swiper-carousel {
+  width: 1050px;
+  height: 300px;
+  margin-left: 90px;
+  margin-right: 900px;
+  position: relative;
+  overflow: hidden;  /* 防止图片溢出轮播容器 */
+}
+
+.swiper-carousel .van-swipe-item {
+  display: flex;
+  justify-content: center;  /* 居中显示每张图片 */
+  align-items: center;  /* 居中图片垂直对齐 */
+}
+
+.swiper-carousel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  /* 确保图片覆盖整个轮播容器并保持比例 */
+}
+
+
+
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);  /* Soft shadow for elegance */
+  border-radius: 10px;  /* Rounded corners for a smoother look */
+  margin-bottom: 30px;  /* Space between the header and other content */
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;  /* Allow left side to take up more space */
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  padding: 12px 30px; /* Larger padding for a more spacious feel */
+  background-color: #f0f0f0;  /* Light background for search bar */
+  border-radius: 30px;
+  width: 70%;  /* Increased width to make the search bar more prominent */
+  transition: all 0.3s ease;
+}
+
+.header-search:hover {
+  background-color: #ff5000;  /* Highlight the search bar on hover */
+}
+
+.search-icon {
+  margin-right: 12px;  /* Adjusted margin to create space between icon and text */
+  width: 24px;  /* Slightly larger icon */
+  height: 24px;
+  transition: transform 0.3s ease;
+}
+
+.search-title {
+  font-size: 18px;  /* Larger font size for better readability */
+  color: #333;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.search-title:hover {
+  color: #ffffff;  /* Change text color when hovered */
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.customer-service-icon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+  color: #333;  /* Ensure icon is visible */
+}
+
+.customer-service-icon:hover {
+  transform: scale(1.1);  /* Slightly increase the size on hover */
+  color: #ff5000;  /* Highlight icon on hover */
+}
+
 </style>
