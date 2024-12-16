@@ -19,8 +19,8 @@ def get_order():
 
         # 查询订单数据
         query = """
-                SELECT o.order_ID, o.user_ID, o.item_ID, o.state, o.price, o.count, 
-                       i.title, i.pic_url ,i.shop_name
+                SELECT o.order_ID, o.user_ID, o.item_ID, o.state, o.price,
+                 o.count, i.title, i.pic_url ,i.shop_name
                 FROM orders o
                 JOIN item i ON o.item_ID = i.item_ID
                 WHERE o.user_ID = %s

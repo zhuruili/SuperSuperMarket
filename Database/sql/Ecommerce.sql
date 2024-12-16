@@ -155,3 +155,43 @@ CREATE VIEW item_kind8 AS
 SELECT *
 FROM supersupermarket.item
 WHERE kind = 8;
+
+-- 权限
+grant INSERT, Delete, Select, Update
+on ecommerce.item
+to 'lzr'@'localhost';
+
+-- 并发控制
+use ecommerce;
+set session transaction ISOLATION level read committed;
+set @@autocommit=0;
+select @@tx_isolation;
+
+
+
+-- 过程函数：
+DELIMITER $$
+
+CREATE PROCEDURE AddItemAndMerchandise(
+    IN p_item_id INT,
+    IN p_title VARCHAR(255),
+    IN p_pic_url VARCHAR(255),
+    IN p_price DECIMAL(10, 2),
+    IN p_sale INT,
+    IN p_shop_name VARCHAR(255),
+    IN p_store INT,
+    IN p_kind VARCHAR(255),
+    IN p_url VARCHAR(255),
+    IN p_user_id INT
+)
+BEGIN
+    -- 插入数据到 item 表
+    INSERT INTO item (item_ID, title, pic_url, price, sale, shop_name, store, kind, url)
+    VALUES (p_item_id, p_title, p_pic_url, p_price, p_sale, p_shop_name, p_store, p_kind, p_url);
+
+    -- 插入数据到 merchandise 表
+    INSERT INTO merchandise (user_ID, item_ID)
+    VALUES (p_user_id, p_item_id);
+END$$
+
+DELIMITER ;
