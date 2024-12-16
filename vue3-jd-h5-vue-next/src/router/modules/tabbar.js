@@ -29,7 +29,7 @@ export default [{
     meta: {
       index: 1
     },
-    component: () => import('@/views/shopCart/index.vue')
+    component: () => import('@/views/shopCart/myindex.vue')
   },
   {
     path: '/mine',

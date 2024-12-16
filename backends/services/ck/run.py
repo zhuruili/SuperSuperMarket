@@ -103,13 +103,34 @@ def add_to_cart():
 def get_cart():
     data = request.get_json()
     user_name = data.get('user_name')
+    print('用户名' + user_name)
 
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('select user_ID from users where userName=%s', [user_name])
-    user_id = cursor.fetchone()[0]
-    cursor.execute('select * from cart where user_id=%s', [user_id])
-    result = cursor.fetchall()
+    query = '''
+        SELECT * FROM orders 
+        WHERE user_id = (SELECT user_ID FROM users WHERE userName = %s)
+    '''
+    cursor.execute(query, [user_name])
+
+    Cart = cursor.fetchall()
+    result = []
+    for cart in Cart:
+        cart_dict = {
+            'cart_id': cart[0],
+            'user_id': cart[1],
+            'item_id': cart[2],
+            'state': cart[3],
+            'price': cart[4],
+            'count': cart[5]
+        }
+        cursor.execute('SELECT title, pic_url, shop_name FROM item WHERE item_ID = %s', [cart_dict['item_id']])
+        item = cursor.fetchone()
+        if item:
+            cart_dict['title'] = item[0]
+            cart_dict['pic_url'] = item[1]
+            cart_dict['shop_name'] = item[2]
+        result.append(cart_dict)
     return jsonify({'data': result})
 
 @app.route('/getOrder', methods=['POST'])
