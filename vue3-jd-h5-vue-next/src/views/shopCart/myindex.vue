@@ -1,13 +1,30 @@
 <template>
-  <div class="shopping-cart">
+  <div class="shopping-cart" v-if="cartItems.length > 0">
     <h1>购物车</h1>
+    
     <div class="cart-item" v-for="(item, index) in cartItems" :key="index">
       <div class="item-header">
-        <input
-          type="checkbox"
-          v-model="item.selected"
-          @change="updateTotal"
-        />
+        <div class="cntr">
+    <input 
+      type="checkbox" 
+      :id="'cbx' + index" 
+      v-model="allSelected" 
+      class="hidden-xs-up"
+      @change="toggleAllSelection"
+    >
+    <label :for="'cbx' + index" class="cbx"></label>
+  </div>
+        <!-- <div class="cntr">
+     
+      <input 
+  v-model="item.selected" 
+  type="checkbox" 
+  :id="'cbx' + index" 
+  class="cbx hidden-xs-up"
+/>
+     
+      <label :for="'cbx' + index" class="cbx"></label>
+    </div> -->
         <span style="font-size: 20px;">{{ '店铺名称：' + item.storeName }}</span>
       </div>
 
@@ -48,10 +65,14 @@
 import { ref, computed, onMounted } from "vue";
 import axios from 'axios';
 
-const cartItems = ref([]);
-
+// const cartItems = ref([]);
+const cartItems = ref([
+  { id: 1, name: 'Item 1', selected: false },
+  { id: 2, name: 'Item 2', selected: false },
+  { id: 3, name: 'Item 3', selected: false }
+]);
 const allSelected = computed({
-  get: () => cartItems.value.every((item) => item.selected),
+  get: () => cartItems.value.length > 0 && cartItems.value.every((item) => item.selected),
   set: (value) => {
     cartItems.value.forEach((item) => (item.selected = value));
   },
@@ -75,8 +96,14 @@ const decreaseQuantity = (index) => {
   }
 };
 
+// 单选逻辑：当某个单选框改变时，动态更新 `allSelected`
+const toggleSingleSelection = () => {
+  allSelected.value = cartItems.value.every((item) => item.selected);
+};
+
 const toggleAllSelection = () => {
-  allSelected.value = !allSelected.value;
+  const newState = !allSelected.value;
+  cartItems.value.forEach((item) => (item.selected = newState));
 };
 
 const removeSelected = () => {
@@ -110,7 +137,7 @@ const refresh = () => {
             quantity: item.count,
             Price: item.price,
             status: item.state,
-            selected: false,
+            selected: true,
         }
         })
     })
@@ -119,6 +146,7 @@ const refresh = () => {
 
 onMounted(() => {
   refresh();
+  console.log(cartItems.value[0].selected)
 });
 </script>
 
@@ -234,4 +262,100 @@ h1 {
   border-radius: 5px;
   cursor: pointer;
 }
+/* 复选框css */
+.cbx {
+   position: relative;
+   top: 1px;
+   width: 27px;
+   height: 27px;
+   border: 1px solid #c8ccd4;
+   border-radius: 3px;
+   vertical-align: middle;
+   transition: background 0.1s ease;
+   cursor: pointer;
+   display: block;
+  }
+
+  .cbx:after {
+   content: '';
+   position: absolute;
+   top: 2px;
+   left: 8px;
+   width: 7px;
+   height: 14px;
+   opacity: 0;
+   transform: rotate(45deg) scale(0);
+   border-right: 2px solid #fff;
+   border-bottom: 2px solid #fff;
+   transition: all 0.3s ease;
+   transition-delay: 0.15s;
+  }
+
+  .lbl {
+   margin-left: 5px;
+   vertical-align: middle;
+   cursor: pointer;
+  }
+
+  .cbx:checked {
+   border-color: transparent;
+   background: #6871f1;
+   animation: jelly 0.6s ease;
+  }
+
+  .cbx:checked:after {
+   opacity: 1;
+   transform: rotate(45deg) scale(1);
+  }
+
+  .cntr {
+   position: relative;
+  }
+
+  @keyframes jelly {
+   from {
+    transform: scale(1, 1);
+   }
+
+   30% {
+    transform: scale(1.25, 0.75);
+   }
+
+   40% {
+    transform: scale(0.75, 1.25);
+   }
+
+   50% {
+    transform: scale(1.15, 0.85);
+   }
+
+   65% {
+    transform: scale(0.95, 1.05);
+   }
+
+   75% {
+    transform: scale(1.05, 0.95);
+   }
+
+   to {
+    transform: scale(1, 1);
+   }
+  }
+
+  .hidden-xs-up {
+   display: none !important;
+  }
+
+  /* 更改
+  .cbx:checked {
+  border-color: transparent;
+  background: #6871f1;
+  animation: jelly 0.6s ease;
+}
+
+.cbx:checked:after {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+} */
+
 </style>
