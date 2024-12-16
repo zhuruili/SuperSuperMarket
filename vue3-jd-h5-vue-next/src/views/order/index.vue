@@ -386,7 +386,7 @@ const refreshOrder = async () => {
         // type: item.type,
       }
     })
-    total = ref(data.length);
+    total.value = data.length;
   })
 };
 

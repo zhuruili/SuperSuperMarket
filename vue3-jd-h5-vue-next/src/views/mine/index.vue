@@ -331,7 +331,7 @@ export default {
 .login-regist {
     display: flex;
     justify-content: center;
-    margin-top: 300px;
+    
     .order-item {
         font-size: 16px;
         color: #333;
