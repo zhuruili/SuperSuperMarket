@@ -54,7 +54,7 @@ def show_ticket():
         with get_connection() as conn:  # 获取数据库连接
             with conn.cursor(dictionary=True) as cursor:  # 使用字典游标返回列名对应值
                 # SQL 查询语句
-                sql_query = "SELECT * FROM ticket WHERE due_time >= %s"
+                sql_query = "SELECT * FROM ticket WHERE due_time >= %s and store>0"
                 params = [datetime.date.today()]  # 查询未过期的优惠券
 
                 cursor.execute(sql_query, params)  # 执行查询

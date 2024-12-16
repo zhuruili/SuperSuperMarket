@@ -322,7 +322,7 @@ const url="http://detail.tmall.com/item.htm?id=718107875372&ns=1&xxc=ad_ztc&skuI
   const store_value = parseInt(store.value);  // 转换为整数
   const sale_value = sale.value;
   const kind_value = kind.value;
-
+  
   try {
     // 发起 POST 请求到后端接口
     const res = await httpInstance.post("http://127.0.0.1:8889/addItem", {
