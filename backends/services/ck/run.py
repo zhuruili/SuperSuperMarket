@@ -34,7 +34,7 @@ def search():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute(f"SELECT * FROM item WHERE title LIKE '%{query}%' AND kind={id}")
+    cursor.execute(f"SELECT * FROM item_kind{id} WHERE title LIKE '%{query}%'")
     result = cursor.fetchall()
     return jsonify({'data': result})
 
@@ -72,12 +72,14 @@ def purchase():
         cursor.execute("START TRANSACTION;")
         cursor.execute('select user_ID from users where userName=%s', [user_name])
         user_id = cursor.fetchone()[0]
+        cursor.execute('update item set store = store - %s where item_ID = %s', [count, item_id])
         cursor.execute('insert into orders(user_id, item_id, state, price, count) values(%s, %s, %s, %s, %s)', [user_id, item_id, state, price, count])
         conn.commit()
         cursor.close()
         conn.close()
     except Exception as e:
         print("创建订单失败")
+        conn.rollback()
         return jsonify({'data': '购买失败'})
     
     return jsonify({'data': '购买成功'})
@@ -232,43 +234,60 @@ def checkout():
     """
     data = request.get_json()
     user_name = data.get('user_name')
-    items = data.get('items')  # items 是一个包含商品ID和数量的列表
+    items = data.get('items')
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # 获取用户ID
-    cursor.execute('SELECT user_ID FROM users WHERE userName=%s', (user_name,))
-    user_id = cursor.fetchone()[0]
+    try:
+        # 显式地开始事务
+        cursor.execute("START TRANSACTION;")
 
-    # 插入订单记录
-    for item in items:
-        item_id= item['item_id']
-        item_num = item['item_num']
-
-        # 获取商品价格
-        cursor.execute('SELECT price FROM item WHERE item_ID=%s', (item_id,))
-        price = cursor.fetchone()[0]
-
-        # 计算总价格
-        total_price = price * item_num
+        # 获取用户ID
+        cursor.execute('SELECT user_ID FROM users WHERE userName=%s', (user_name,))
+        user_result = cursor.fetchone()
+        if user_result is None:
+            return jsonify({'error': 'User not found'}), 404
+        user_id = user_result[0]
 
         # 插入订单记录
-        cursor.execute('''
-            INSERT INTO orders (user_ID, item_ID, state, price, count)
-            VALUES (%s, %s, %s, %s, %s)
-        ''', (user_id, item_id, 0, total_price, item_num))
+        for item in items:
+            item_id = item['item_id']
+            item_num = item['item_num']
 
-        # 删除购物车中的商品
-        cursor.execute('''
-            DELETE FROM cart
-            WHERE user_ID=%s AND item_ID=%s
-        ''', (user_id, item_id))
+            # 获取商品价格
+            cursor.execute('SELECT price FROM item WHERE item_ID=%s', (item_id,))
+            price_result = cursor.fetchone()
+            if price_result is None:
+                return jsonify({'error': f'Item with ID {item_id} not found'}), 404
+            price = price_result[0]
 
-    conn.commit()
-    conn.close()
+            # 计算总价格
+            total_price = price * item_num
 
-    return jsonify({'message': '订单已生成'})
+            # 插入订单记录
+            cursor.execute('''
+                INSERT INTO orders (user_ID, item_ID, state, price, count)
+                VALUES (%s, %s, %s, %s, %s)
+            ''', (user_id, item_id, 0, total_price, item_num))
+
+            # 删除购物车中的商品
+            cursor.execute('''
+                DELETE FROM cart
+                WHERE user_ID=%s AND item_ID=%s
+            ''', (user_id, item_id))
+
+        # 提交事务
+        conn.commit()
+        return jsonify({"message": "结算成功"}), 200
+    except Exception as e:
+        # 回滚事务
+        conn.rollback()
+        print('Error:', e)
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5678)
