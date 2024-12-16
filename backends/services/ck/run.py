@@ -1,3 +1,5 @@
+import hashlib
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import random
@@ -37,7 +39,10 @@ def search():
     cursor.execute(f"SELECT * FROM item_kind{id} WHERE title LIKE '%{query}%'")
     result = cursor.fetchall()
     return jsonify({'data': result})
-
+# MD5 加密函数
+def hash_password(password):
+    """对密码进行 MD5 加密"""
+    return hashlib.md5(password.encode('utf-8')).hexdigest()
 @app.route('/register', methods=['POST'])
 def register():
     conn = get_db_connection()
@@ -47,13 +52,24 @@ def register():
     password = data.get('password')
     print('username' + username)
     print('password' + password)
-    
-    cursor = conn.cursor()
-    cursor.execute('insert into users(userName, passwords, state) values(%s, %s, %s)', [username, password, 0])
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({'data': '注册成功'})
+    print(password)
+    # 对密码进行 MD5 加密
+    hashed_password = hash_password(password)
+    print(f"hash:{hashed_password}")
+    try:
+        cursor = conn.cursor()
+        # 将加密后的密码存储到数据库
+        cursor.execute('INSERT INTO users (userName, passwords, state) VALUES (%s, %s, %s)',
+                       [username, hashed_password, 0])
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({'data': '注册成功'}), 200
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return jsonify({'message': 'An error occurred while processing your request'}), 500
 
 @app.route('/purchase', methods=['POST'])
 def purchase():
