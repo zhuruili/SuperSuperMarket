@@ -155,3 +155,14 @@ CREATE VIEW item_kind8 AS
 SELECT *
 FROM supersupermarket.item
 WHERE kind = 8;
+
+-- 权限
+grant INSERT, Delete, Select, Update
+on ecommerce.item
+to 'lzr'@'localhost';
+
+-- 并发控制
+use ecommerce;
+set session transaction ISOLATION level read committed;
+set @@autocommit=0;
+select @@tx_isolation;
