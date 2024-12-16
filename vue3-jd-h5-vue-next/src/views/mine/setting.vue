@@ -333,7 +333,8 @@ const url="http://detail.tmall.com/item.htm?id=718107875372&ns=1&xxc=ad_ztc&skuI
       shop_name: shop_name,
       store: store_value,
       kind: kind_value,
-      url: url
+      url: url,
+      user_id:localStorage.getItem("userId")
     }, {
       headers: {
         'Content-Type': 'application/json'

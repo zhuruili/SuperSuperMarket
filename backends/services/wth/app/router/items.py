@@ -22,23 +22,21 @@ def add_item():
     store = data.get('store')
     kind = data.get('kind')
     url = data.get('url')
-    id = random.randint(20000, 1000000)
+    user_id = data.get('user_id')  # 假设前端传递了用户ID
+    item_id = random.randint(20000, 1000000)  # 随机生成 item_ID
 
-    # 插入数据库
     try:
         with get_connection() as conn:  # 获取数据库连接
-            with conn.cursor(dictionary=True) as cursor:  # 使用字典格式返回数据
-                # 插入商品数据的 SQL 查询
-                insert_sql = """
-                    INSERT INTO item (item_ID,title, pic_url, price, sale, shop_name, store, kind, url)
-                    VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s)
-                """
-
-                cursor.execute(insert_sql, (id,title, pic_url, price, sale, shop_name, store, kind, url))
+            with conn.cursor() as cursor:
+                # 调用存储过程
+                cursor.callproc('AddItemAndMerchandise', [
+                    item_id, title, pic_url, price, sale, shop_name, store, kind, url, user_id
+                ])
                 conn.commit()  # 提交事务
 
         # 返回成功响应
         return jsonify({"success": True, "message": "商品添加成功"})
+
     except Exception as e:
         print("Error:", e)
         return jsonify({"success": False, "message": "商品添加失败"})
