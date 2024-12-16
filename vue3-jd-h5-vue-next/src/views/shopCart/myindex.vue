@@ -30,7 +30,6 @@
 
       </div>
       <div class="footer-summary">
-        <p>总价：￥{{ totalPrice.toFixed(2) }}</p>
         <button @click="checkout">结算</button>
       </div>
     </div>

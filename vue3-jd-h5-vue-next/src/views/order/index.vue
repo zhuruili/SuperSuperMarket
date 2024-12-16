@@ -323,7 +323,7 @@
           <span>{{ order.storeName }}</span>
           <span v-if="order.type !== 1">订单号:{{ order.orderNumber }}</span>
         </div>
-        <span>{{ order.status }}</span>
+
       </li>
       <li class="order-info">
         <img :src="order.productImage" alt />

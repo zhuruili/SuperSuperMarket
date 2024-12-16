@@ -27,7 +27,6 @@
         name="shopCart"
         icon="shopping-cart-o"
         to="/shopCart"
-        :badge="count"
       >
         购物车
       </van-tabbar-item>
