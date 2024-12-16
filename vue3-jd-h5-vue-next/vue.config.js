@@ -20,6 +20,7 @@ module.exports = {
   },
   configureWebpack: {
     devServer: {
+      historyApiFallback: true,
       disableHostCheck: true, // 禁用webpack热重载检查 解决热更新失效问题
       before(app) { // 改完接口需要重启才能生效
         // 用户信息池

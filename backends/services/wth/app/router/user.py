@@ -42,3 +42,30 @@ def get_users():
         return jsonify({"message": "An error occurred while processing your request"}), 500
 
 
+@users_bp.route('/getPower',methods=['POST'])
+def get_power():
+    try:
+        # 获取请求中的 userId
+        data = request.get_json()
+        user_id = data.get("userId")
+
+        if not user_id:
+            return jsonify({"error": "userId is required"}), 400
+
+        with get_connection() as conn:  # 使用连接池获取数据库连接
+            with conn.cursor() as cursor:
+                # 查询用户状态
+                cursor.execute("SELECT state FROM users WHERE user_ID = %s", (user_id,))
+                result = cursor.fetchone()
+
+                if result is None:
+                    return jsonify({"error": "User not found"}), 404
+
+                # 获取状态值
+                state = result[0]
+
+                return jsonify({"power": state}), 200
+
+    except Exception as e:
+        # 捕获异常并返回错误信息
+        return jsonify({"error": str(e)}), 500

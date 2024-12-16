@@ -1,13 +1,14 @@
 from flask_socketio import SocketIO
 
 from backends.services.wth.app.init import init
+from backends.services.wth.app.router.items import item_bp
 from backends.services.wth.app.router.order import order_bp
 from backends.services.wth.app.router.ticket import ticket_bp
 from backends.services.wth.app.router.user import users_bp
 
 app = init.create_app()
 socketio=SocketIO(app)
-
+app.register_blueprint(item_bp)
 app.register_blueprint(users_bp)
 app.register_blueprint(order_bp )
 app.register_blueprint(ticket_bp )
