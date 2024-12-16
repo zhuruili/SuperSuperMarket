@@ -1,5 +1,5 @@
 
-<template>
+<template> 
   <div class="shop-cart">
     <header class="page-header">
       <div class="header-content">购物车</div>
@@ -124,6 +124,7 @@
 </template>
 
 <script setup>
+import axios from "axios";
 import { ref, onMounted, getCurrentInstance } from "vue";
 import { useRouter } from 'vue-router';
 
@@ -136,6 +137,15 @@ const cartMode = ref(true);
 const show = ref(false);
 const checked = ref(false);
 const stepperValue = ref("");
+
+
+
+
+
+
+
+
+
 
 const close = () => {
   show.value = false;

@@ -79,7 +79,13 @@ const purchase = product => {
 };
 
 const addToCart = product => {
-  console.log('addToCart:', product);
+  // 实现加入购物车逻辑
+    console.log('加入购物车', product);
+    const user_name = localStorage.getItem('username')
+    axios.post('http://127.0.0.1:5678/addToCart', { user_name:user_name, item_id:product.item_ID, count:'1' }).then((res) => {
+        console.log(res.data)
+        alert('加入购物车成功')
+    })
 };
 
 const loadProducts = async (category) => {

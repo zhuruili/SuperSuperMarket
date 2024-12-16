@@ -27,13 +27,7 @@
 
     <div class="cart-footer">
       <div class="footer-actions">
-        <input
-          type="checkbox"
-          v-model="allSelected"
-          @change="toggleAllSelection"
-        />
-        <span>全选</span>
-        <button @click="removeSelected">删除所选</button>
+
       </div>
       <div class="footer-summary">
         <p>总价：￥{{ totalPrice.toFixed(2) }}</p>
@@ -45,7 +39,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, toRaw } from "vue";
 import axios from 'axios';
 
 const cartItems = ref([]);
@@ -84,7 +78,16 @@ const removeSelected = () => {
 };
 
 const checkout = () => {
-  alert(`结算成功！总价为：￥${totalPrice.value.toFixed(2)}`);
+  const user_name = localStorage.getItem('username')
+  console.log(cartItems)
+  const items = toRaw(cartItems.value).map(item => ({
+    item_id: item.item_id,
+    item_num: item.quantity
+  }));
+  console.log(items)
+  axios.post('http://127.0.0.1:5678/Cart/checkout', { user_name: user_name, items: items }).then((res) => {
+      alert('结算成功')
+    })
 };
 
 const updateTotal = () => {
@@ -96,11 +99,12 @@ const refresh = () => {
     const user_name = localStorage.getItem('username')
     axios.post('http://127.0.0.1:5678/getCart', { user_name:user_name }).then((res) => {
         const data = res.data.data
-        console.log(data)
+        // console.log(data)
         const temp = []
         cartItems.value = data.map(item => {
         return {
-            id: item.cart_id,
+          id: item.cart_id,
+            item_id: item.item_id,
             storeName: item.shop_name,
             orderNumber: item.cart_id,
             productImage: item.pic_url,
@@ -114,8 +118,9 @@ const refresh = () => {
         }
         })
     })
-    console.log(cartItems)
 };
+
+
 
 onMounted(() => {
   refresh();

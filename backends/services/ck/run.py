@@ -108,7 +108,7 @@ def get_cart():
     conn = get_db_connection()
     cursor = conn.cursor()
     query = '''
-        SELECT * FROM orders 
+        SELECT * FROM cart 
         WHERE user_id = (SELECT user_ID FROM users WHERE userName = %s)
     '''
     cursor.execute(query, [user_name])
@@ -120,16 +120,16 @@ def get_cart():
             'cart_id': cart[0],
             'user_id': cart[1],
             'item_id': cart[2],
-            'state': cart[3],
-            'price': cart[4],
-            'count': cart[5]
+            'state': '0',
+            'count': cart[3]
         }
-        cursor.execute('SELECT title, pic_url, shop_name FROM item WHERE item_ID = %s', [cart_dict['item_id']])
+        cursor.execute('SELECT title, pic_url, shop_name, price FROM item WHERE item_ID = %s', [cart_dict['item_id']])
         item = cursor.fetchone()
         if item:
             cart_dict['title'] = item[0]
             cart_dict['pic_url'] = item[1]
             cart_dict['shop_name'] = item[2]
+            cart_dict['price'] = item[3]
         result.append(cart_dict)
     return jsonify({'data': result})
 
@@ -168,7 +168,7 @@ def get_Order():
     
     cursor.close()
     conn.close()
-    
+
     return jsonify({'data': result})
 
 @app.route('/', methods=['POST'])
@@ -215,6 +215,60 @@ def category():
     conn.close()
 
     return jsonify(selected_items)
+
+@app.route('/Cart/checkout', methods=['POST'])
+def checkout():
+    """
+    结算购物车，将购物车中的商品生成订单  
+    ```python
+    {
+        "user_name": "example_user",
+        "items": [
+            {"item_id": 1, "item_num": 2},
+            {"item_id": 2, "item_num": 1}
+        ]
+    }
+    ```
+    """
+    data = request.get_json()
+    user_name = data.get('user_name')
+    items = data.get('items')  # items 是一个包含商品ID和数量的列表
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # 获取用户ID
+    cursor.execute('SELECT user_ID FROM users WHERE userName=%s', (user_name,))
+    user_id = cursor.fetchone()[0]
+
+    # 插入订单记录
+    for item in items:
+        item_id= item['item_id']
+        item_num = item['item_num']
+
+        # 获取商品价格
+        cursor.execute('SELECT price FROM item WHERE item_ID=%s', (item_id,))
+        price = cursor.fetchone()[0]
+
+        # 计算总价格
+        total_price = price * item_num
+
+        # 插入订单记录
+        cursor.execute('''
+            INSERT INTO orders (user_ID, item_ID, state, price, count)
+            VALUES (%s, %s, %s, %s, %s)
+        ''', (user_id, item_id, 0, total_price, item_num))
+
+        # 删除购物车中的商品
+        cursor.execute('''
+            DELETE FROM cart
+            WHERE user_ID=%s AND item_ID=%s
+        ''', (user_id, item_id))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({'message': '订单已生成'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5678)

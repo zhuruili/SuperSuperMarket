@@ -8,7 +8,7 @@ def get_db():
         host="localhost",
         user="root",
         password="123456",
-        database="supersupermarket"
+        database="super_supermarket"
     )
     return conn
 
