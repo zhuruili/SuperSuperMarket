@@ -90,7 +90,7 @@ const coupons = ref([
   },
 ]);
 
-const kind = ref({
+const kinds = ref({
    1:'电脑',
    2:'手机',
    3:'女装',
@@ -111,7 +111,7 @@ const kind = ref({
       coupons.value = response.data.data.map(ticket => ({
         id: ticket.ticket_ID,
         discount: ticket.discount,
-        kind: kind.value.ticket.kind,
+        kind: kinds.value[ticket.kind],
         storage: ticket.store,
         info: ticket.info,
         create_time: ticket.create_time,
