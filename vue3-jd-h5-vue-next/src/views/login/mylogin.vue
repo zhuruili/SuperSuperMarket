@@ -1,4 +1,5 @@
 <template>
+    <div class="container">
     <div class="register-container">
         <h2>登录</h2>
         <form @submit.prevent="handleRegister">
@@ -17,6 +18,7 @@
         </form>
     </div>
     <tabbar></tabbar>
+</div>
 </template>
 
 <script setup>
@@ -72,11 +74,14 @@ const handleCancel = () => {
 </script>
 
 <style scoped lang="scss">
+.container{
+
+}
 .register-container {
     max-width: 300px;
     max-height: 250px;
-    margin: 150px auto;
-    padding: 20px;
+    margin-top:0px ;
+   
     border: 1px solid #ccc;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -134,4 +139,5 @@ button:hover {
 button[type="button"]:hover {
     background-color: #5a6268;
 }
+
 </style>

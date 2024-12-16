@@ -1,14 +1,24 @@
 # SuperSupermarket
 
-![frontend](https://img.shields.io/badge/frontend-Vue3-green)
+![frontend](https://img.shields.io/badge/frontend-Vue3-darkgreen)
 ![backend](https://img.shields.io/badge/backend-Python-blue)
 ![license](https://img.shields.io/badge/License-MIT-red)
-![database](https://img.shields.io/badge/Database-MySQL-gray)
+![database](https://img.shields.io/badge/Database-MySQL-green)
 ![crawler](https://img.shields.io/badge/crawler-DrissionPage-brown)
 
-一款简易的购物Web应用
+一款简易的购物Web应用，支持MySQL，仓库中包含完整的前后端代码与支持项目所需的数据与SQL语句
 
 A simple shopping web application
+
+---
+
+## 项目特点
+
+- 良好的数据库支持
+- 使用原生SQL语句
+- 提供数据获取代码
+- 基于Vue与Flask框架
+- 前后端分离
 
 ---
 
@@ -41,8 +51,9 @@ A simple shopping web application
 后续的优化与改进。
 
 - [X] 主页界面美化
+- [X] 搜索界面美化
 - [X] 触发器与事务的应用
-- [ ] 备份
+- [ ] 数据库备份
 
 ## 数据库设计
 
@@ -52,11 +63,15 @@ A simple shopping web application
   <img src="Database/design/dataTable.png" alt="dataTable">
 </p>
 
-## 数据爬取
+---
 
-商品信息来源为某宝，商品条目数总计12857条，以csv保存后续录入数据库
+## 附录
 
-### 数据项汇总
+### 商品信息
+
+商品信息来源为某宝，商品条目数为了从简设计仅保留总计12857条，以csv保存后续录入数据库
+
+#### 数据项汇总
 
 1. id--商品ID，根据商品条目数累加
 2. title--商品名/显示标题
@@ -68,7 +83,7 @@ A simple shopping web application
 8. kind--类别
 9. url--详情链接
 
-### 商品种类约定
+#### 商品种类约定
 
 ```python
 kind = {
@@ -82,3 +97,7 @@ kind = {
   '图书': 8
 }
 ```
+
+---
+
+*If you find our project helpful, give us a star, plz.*
