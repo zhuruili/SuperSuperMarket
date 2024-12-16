@@ -1,3 +1,5 @@
+import subprocess
+
 from flask import jsonify, request
 from backends.services.lzr.app import app, get_db
 import random
@@ -97,16 +99,57 @@ def checkout():
 
     return jsonify({'message': '订单已生成'})
 
-
-@app.route('/BackupDatabase', methods=['POST'])
+@app.route('/BackupDatabase', methods=['GET'])
 def backup():
     """备份数据库"""
-    conn = get_db()
-    cursor = conn.cursor()
+    try:
+        # 配置数据库连接信息
+        user = 'root'  # MySQL 用户名
+        password = '1234'  # MySQL 密码
+        host = '127.0.0.1'  # 数据库主机
+        database = 'super_supermarket'  # 数据库名称
+        backup_path = 'C:/supersupermarket.bak'
 
-    # 备份数据库
-    cursor.execute('BACKUP DATABASE supersupermarket TO DISK = "C:/supersupermarket.bak"')
-    conn.commit()
-    conn.close()
+        # 使用 mysqldump 工具备份数据库
+        command = [
+            'mysqldump',
+            '-u', user,
+            '-p' + password,
+            '-h', host,
+            database,
+            '--result-file=' + backup_path
+        ]
 
-    return jsonify({'message': '数据库已备份'})
+        subprocess.run(command, check=True)
+
+        return jsonify({'message': '数据库已成功备份到 ' + backup_path})
+    except subprocess.CalledProcessError as e:
+        return jsonify({'error': '数据库备份失败', 'details': str(e)})
+
+
+@app.route('/recovery', methods=['GET'])
+def recovery():
+    """恢复数据库"""
+    try:
+        # 配置数据库连接信息
+        user = 'root'  # MySQL 用户名
+        password = '1234'  # MySQL 密码
+        host = '127.0.0.1'  # 数据库主机
+        database = 'super_supermarket'  # 数据库名称
+        backup_path = 'C:/supersupermarket.bak'
+
+        # 使用 mysql 工具恢复数据库
+        command = [
+            'mysql',
+            '-u', user,
+            '-p' + password,
+            '-h', host,
+            database,
+            '-e', f"source {backup_path}"  # 使用 source 命令恢复数据库
+        ]
+
+        subprocess.run(command, check=True)
+
+        return jsonify({'message': '数据库已成功恢复从 ' + backup_path})
+    except subprocess.CalledProcessError as e:
+        return jsonify({'error': '数据库恢复失败', 'details': str(e)})
