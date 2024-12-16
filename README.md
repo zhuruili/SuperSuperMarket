@@ -22,6 +22,66 @@ A simple shopping web application
 
 ---
 
+## 项目展示
+
+- **商城主页**
+
+包含搜索框、轮换图、随机商品推送等
+
+<p align="center">
+  <img src="ShowPics/主页.png" alt="dataTable">
+</p>
+
+- **搜索栏**
+
+支持按类搜索
+
+<p align="center">
+  <img src="ShowPics/搜索.png" alt="dataTable">
+</p>
+
+- **分类视图**
+
+按类罗列商品
+
+<p align="center">
+  <img src="ShowPics/分类视图.png" alt="dataTable">
+</p>
+
+- **购物券领取**
+
+领取购买物品的优惠券
+
+<p align="center">
+  <img src="ShowPics/优惠券.png" alt="dataTable">
+</p>
+
+- **购物车**
+
+想买的加入购物车的宝贝
+
+<p align="center">
+  <img src="ShowPics/购物车.png" alt="dataTable">
+</p>
+
+- **订单**
+
+已结算的宝贝
+
+<p align="center">
+  <img src="ShowPics/订单.png" alt="dataTable">
+</p>
+
+- **权限**
+
+例如商家/管理员可以上架商品
+
+<p align="center">
+  <img src="ShowPics/上架.png" alt="dataTable">
+</p>
+
+---
+
 ## Todo List
 
 >项目开发期阶段记录
@@ -43,7 +103,7 @@ A simple shopping web application
 - [X] 主页轮换图
 - [X] 主页商品随机推送
 - [X] 订单
-- [ ] 购物车
+- [X] 购物车
 - [X] 购物券
 
 ### Phase-3
@@ -53,7 +113,8 @@ A simple shopping web application
 - [X] 主页界面美化
 - [X] 搜索界面美化
 - [X] 触发器与事务的应用
-- [ ] 数据库备份
+- [X] 数据库备份
+- [X] 不同用户权限
 
 ## 数据库设计
 
