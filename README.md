@@ -121,7 +121,7 @@ A simple shopping web application
 根据购物应用的功能设计数据库的类图如下：
 
 <p align="center">
-  <img src="Database/design/dataTable.png" alt="dataTable">
+  <img src="Database/design/E-R.png" alt="dataTable">
 </p>
 
 ---
